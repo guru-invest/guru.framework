@@ -78,8 +78,8 @@ func UpdateContent(sheetTitle string, content map[string]interface{} ) (err erro
 			if columns.Value == key {
 				for j, columnCell := range sheet.Rows {
 					if columnCell[columns.Column].Value == value {
-						for _, tuple := range sheet.Rows[j] {
-							UpdateCell(sheetTitle, int(tuple.Row), int(tuple.Column), fmt.Sprintf("%v", value))
+						if columns.Value == key {
+							UpdateCell(sheetTitle, int(columnCell[columns.Column].Row), int(columnCell[columns.Column].Column), fmt.Sprintf("%v", value))
 						}
 					}
 				}
