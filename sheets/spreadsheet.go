@@ -79,7 +79,7 @@ func UpdateContent(sheetTitle string, content map[string]interface{} ) (err erro
 				for j, columnCell := range sheet.Rows {
 					if columnCell[columns.Column].Value == value {
 						for _, tuple := range sheet.Rows[j] {
-							sheet.Rows[0][tuple.Column].Value = fmt.Sprintf("%v", value)
+							tuple.Value = fmt.Sprintf("%v", value)
 						}
 					}
 				}
