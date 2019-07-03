@@ -73,13 +73,13 @@ func UpdateCell(sheetTitle string, row int, column int, value string) (err error
 func UpdateContent(sheetTitle string, content map[string]interface{} ) (err error){
 	sheet, err := SpreadSheet.SheetByTitle(sheetTitle)
 	checkError(err)
-	for _, columns := range sheet.Rows[0] {
-		for key, value := range content {
+	for key, value := range content {
+		for _, columns := range sheet.Rows[0] {
 			if columns.Value == key {
 				for j, columnCell := range sheet.Rows {
 					if columnCell[columns.Column].Value == value {
 						for _, tuple := range sheet.Rows[j] {
-							sheet.Rows[0][tuple.Column].Value = fmt.Sprintf("%v" ,value)
+							sheet.Rows[0][tuple.Column].Value = fmt.Sprintf("%v", value)
 						}
 					}
 				}
