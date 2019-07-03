@@ -26,9 +26,9 @@ func Initialize(client_secret string, sheetId string){
 	SpreadSheet = connect(client_secret, sheetId)
 }
 
-func AutoSumAllValuesOnColumn(sheetIndex int, column int) float64{
+func AutoSumAllValuesOnColumn(sheetTitle string, column int) float64{
 	res := 0.0
-	sheet, err := SpreadSheet.SheetByIndex(uint(sheetIndex))
+	sheet, err := SpreadSheet.SheetByTitle(sheetTitle)
 	checkError(err)
 	for _, row := range sheet.Rows {
 		for _, cell := range row {
@@ -42,9 +42,9 @@ func AutoSumAllValuesOnColumn(sheetIndex int, column int) float64{
 	return res
 }
 
-func GetAllValuesFromColumn(sheetIndex int, column int) []string{
+func GetAllValuesFromColumn(sheetTitle string, column int) []string{
 	ret := []string{}
-	sheet, err := SpreadSheet.SheetByIndex(uint(sheetIndex))
+	sheet, err := SpreadSheet.SheetByTitle(sheetTitle)
 	checkError(err)
 	for _, row := range sheet.Rows {
 		for _, cell := range row {
@@ -56,8 +56,8 @@ func GetAllValuesFromColumn(sheetIndex int, column int) []string{
 	return ret
 }
 
-func UpdateCell(sheetIndex int, row int, column int, value string) (err error){
-	sheet, err := SpreadSheet.SheetByIndex(uint(sheetIndex))
+func UpdateCell(sheetTitle string, row int, column int, value string) (err error){
+	sheet, err := SpreadSheet.SheetByTitle(sheetTitle)
 	checkError(err)
 	sheet.Update(row, column, value)
 	err = sheet.Synchronize()
@@ -69,14 +69,14 @@ func UpdateCell(sheetIndex int, row int, column int, value string) (err error){
 	}
 }
 
-func AddContent(sheetIndex int, content map[string]string )(err error){
-	sheet, err := SpreadSheet.SheetByIndex(uint(sheetIndex))
+func AddContent(sheetTitle string, content map[string]string )(err error){
+	sheet, err := SpreadSheet.SheetByTitle(sheetTitle)
 	checkError(err)
 	cap := len(sheet.Rows)
 	for i, cell := range sheet.Rows[0] {
 		for key, value := range content {
 			if cell.Value == key {
-				err = UpdateCell(sheetIndex, cap, i, value)
+				err = UpdateCell(sheetTitle, cap, i, value)
 				checkError(err)
 			}
 		}
@@ -87,6 +87,30 @@ func AddContent(sheetIndex int, content map[string]string )(err error){
 		return err
 	}else{
 		return nil
+	}
+}
+
+func getRowByValueInColumn(sheetTitle string, value string, column string )(data map[string]string, err error){
+	sheet, err := SpreadSheet.SheetByTitle(sheetTitle)
+	checkError(err)
+	data = map[string]string{}
+	for _, columns := range sheet.Rows[0] {
+		if columns.Value == column{
+			for j,columnCell := range sheet.Rows{
+				if columnCell[columns.Column].Value == value{
+					for _, tuple := range sheet.Rows[j]{
+						data[sheet.Rows[0][tuple.Column].Value] = tuple.Value
+					}
+				}
+			}
+		}
+	}
+	err = sheet.Synchronize()
+	checkError(err)
+	if err != nil {
+		return nil, err
+	}else{
+		return data, nil
 	}
 }
 
