@@ -1,6 +1,7 @@
 package sheets
 
 import (
+	"fmt"
 	"golang.org/x/net/context"
 	"golang.org/x/oauth2/google"
 	"gopkg.in/Iwark/spreadsheet.v2"
@@ -69,14 +70,14 @@ func UpdateCell(sheetTitle string, row int, column int, value string) (err error
 	}
 }
 
-func AddContent(sheetTitle string, content map[string]string )(err error){
+func AddContent(sheetTitle string, content map[string]interface{} )(err error){
 	sheet, err := SpreadSheet.SheetByTitle(sheetTitle)
 	checkError(err)
 	cap := len(sheet.Rows)
 	for i, cell := range sheet.Rows[0] {
 		for key, value := range content {
 			if cell.Value == key {
-				err = UpdateCell(sheetTitle, cap, i, value)
+				err = UpdateCell(sheetTitle, cap, i, fmt.Sprintf("%v",value))
 				checkError(err)
 			}
 		}
@@ -90,10 +91,10 @@ func AddContent(sheetTitle string, content map[string]string )(err error){
 	}
 }
 
-func getRowByValueInColumn(sheetTitle string, value string, column string )(data map[string]string, err error){
+func getRowByValueInColumn(sheetTitle string, value string, column string )(data map[string]interface{}, err error){
 	sheet, err := SpreadSheet.SheetByTitle(sheetTitle)
 	checkError(err)
-	data = map[string]string{}
+	data = map[string]interface{}{}
 	for _, columns := range sheet.Rows[0] {
 		if columns.Value == column{
 			for j,columnCell := range sheet.Rows{
