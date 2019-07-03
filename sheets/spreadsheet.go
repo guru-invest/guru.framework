@@ -76,7 +76,7 @@ func UpdateContent(sheetTitle string, content map[string]interface{} ) (err erro
 	for key, value := range content {
 		for _, columns := range sheet.Rows[0] {
 			if columns.Value == key {
-				for j, columnCell := range sheet.Rows {
+				for _, columnCell := range sheet.Rows {
 					if columnCell[columns.Column].Value == value {
 						if columns.Value == key {
 							UpdateCell(sheetTitle, int(columnCell[columns.Column].Row), int(columnCell[columns.Column].Column), fmt.Sprintf("%v", value))
