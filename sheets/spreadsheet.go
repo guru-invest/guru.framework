@@ -91,7 +91,7 @@ func AddContent(sheetTitle string, content map[string]interface{} )(err error){
 	}
 }
 
-func getRowByValueInColumn(sheetTitle string, value string, column string )(data map[string]interface{}, err error){
+func GetRowByValueInColumn(sheetTitle string, value string, column string )(data map[string]interface{}, err error){
 	sheet, err := SpreadSheet.SheetByTitle(sheetTitle)
 	checkError(err)
 	data = map[string]interface{}{}
