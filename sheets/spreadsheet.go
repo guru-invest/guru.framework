@@ -61,6 +61,7 @@ func UpdateCell(sheetTitle string, row int, column int, value string) (err error
 	sheet, err := SpreadSheet.SheetByTitle(sheetTitle)
 	checkError(err)
 	sheet.Update(row, column, value)
+	err = sheet.Synchronize()
 	checkError(err)
 	if err != nil {
 		return err
