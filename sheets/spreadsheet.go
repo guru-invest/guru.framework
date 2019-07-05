@@ -11,7 +11,7 @@ import (
 
 var SpreadSheet = spreadsheet.Spreadsheet{}
 
-func connect(client_secret string, sheetId string)spreadsheet.Spreadsheet{
+func connect(client_secret string, sheetId string) spreadsheet.Spreadsheet {
 	data, err := ioutil.ReadFile(client_secret)
 	checkError(err)
 	conf, err := google.JWTConfigFromJSON(data, spreadsheet.Scope)
@@ -23,17 +23,17 @@ func connect(client_secret string, sheetId string)spreadsheet.Spreadsheet{
 	return spreadsheet
 }
 
-func Initialize(client_secret string, sheetId string){
+func Initialize(client_secret string, sheetId string) {
 	SpreadSheet = connect(client_secret, sheetId)
 }
 
-func AutoSumAllValuesOnColumn(sheetTitle string, column int) float64{
+func AutoSumAllValuesOnColumn(sheetTitle string, column int) float64 {
 	res := 0.0
 	sheet, err := SpreadSheet.SheetByTitle(sheetTitle)
 	checkError(err)
 	for _, row := range sheet.Rows {
 		for _, cell := range row {
-			if cell.Column == uint(column){
+			if cell.Column == uint(column) {
 				f, err := strconv.ParseFloat(cell.Value, 64)
 				checkError(err)
 				res += f
@@ -43,13 +43,13 @@ func AutoSumAllValuesOnColumn(sheetTitle string, column int) float64{
 	return res
 }
 
-func GetAllValuesFromColumn(sheetTitle string, column int) []string{
+func GetAllValuesFromColumn(sheetTitle string, column int) []string {
 	ret := []string{}
 	sheet, err := SpreadSheet.SheetByTitle(sheetTitle)
 	checkError(err)
 	for _, row := range sheet.Rows {
 		for _, cell := range row {
-			if cell.Column == uint(column){
+			if cell.Column == uint(column) {
 				ret = append(ret, cell.Value)
 			}
 		}
@@ -57,7 +57,7 @@ func GetAllValuesFromColumn(sheetTitle string, column int) []string{
 	return ret
 }
 
-func UpdateCell(sheetTitle string, row int, column int, value string) (err error){
+func UpdateCell(sheetTitle string, row int, column int, value string) (err error) {
 	sheet, err := SpreadSheet.SheetByTitle(sheetTitle)
 	checkError(err)
 	sheet.Update(row, column, value)
@@ -65,12 +65,12 @@ func UpdateCell(sheetTitle string, row int, column int, value string) (err error
 	checkError(err)
 	if err != nil {
 		return err
-	}else{
+	} else {
 		return nil
 	}
 }
 
-func UpdateContent(sheetTitle string, content map[string]interface{} ) (err error){
+func UpdateContent(sheetTitle string, content map[string]interface{}) (err error) {
 	sheet, err := SpreadSheet.SheetByTitle(sheetTitle)
 	checkError(err)
 	for key, value := range content {
@@ -90,19 +90,19 @@ func UpdateContent(sheetTitle string, content map[string]interface{} ) (err erro
 	checkError(err)
 	if err != nil {
 		return err
-	}else{
+	} else {
 		return nil
 	}
 }
 
-func AddContent(sheetTitle string, content map[string]interface{} )(err error){
+func AddContent(sheetTitle string, content map[string]interface{}) (err error) {
 	sheet, err := SpreadSheet.SheetByTitle(sheetTitle)
 	checkError(err)
 	cap := len(sheet.Rows)
 	for i, cell := range sheet.Rows[0] {
 		for key, value := range content {
 			if cell.Value == key {
-				err = UpdateCell(sheetTitle, cap, i, fmt.Sprintf("%v",value))
+				err = UpdateCell(sheetTitle, cap, i, fmt.Sprintf("%v", value))
 				checkError(err)
 			}
 		}
@@ -111,31 +111,43 @@ func AddContent(sheetTitle string, content map[string]interface{} )(err error){
 	checkError(err)
 	if err != nil {
 		return err
-	}else{
+	} else {
 		return nil
 	}
 }
 
-func GetRowByValueInColumn(sheetTitle string, value string, column string )(data map[string]interface{}, err error){
+func GetRowByValueInColumn(sheetTitle string, value string, column string) (data map[string]interface{}, err error) {
 	sheet, err := SpreadSheet.SheetByTitle(sheetTitle)
 	checkError(err)
-	data = map[string]interface{}{}
-	for _, columns := range sheet.Rows[0] {
-		if columns.Value == column{
-			for j,columnCell := range sheet.Rows{
-				if columnCell[columns.Column].Value == value{
-					for _, tuple := range sheet.Rows[j]{
-						data[sheet.Rows[0][tuple.Column].Value] = tuple.Value
+	if err != nil {
+		return nil, err
+	} else {
+		data = map[string]interface{}{}
+		for _, columns := range sheet.Rows[0] {
+			if columns.Value == column {
+				for j, columnCell := range sheet.Rows {
+					if columnCell[columns.Column].Value == value {
+						for _, tuple := range sheet.Rows[j] {
+							data[sheet.Rows[0][tuple.Column].Value] = tuple.Value
+						}
 					}
 				}
 			}
 		}
+		return data, nil
 	}
-	err = sheet.Synchronize()
+}
+
+func GetRow(sheetTitle string, row int) (data map[string]interface{}, err error) {
+	sheet, err := SpreadSheet.SheetByTitle(sheetTitle)
 	checkError(err)
 	if err != nil {
 		return nil, err
-	}else{
+	} else {
+		data = map[string]interface{}{}
+		for i := range sheet.Rows[0] {
+			data[sheet.Rows[0][i].Value] = sheet.Rows[row][i].Value
+		}
 		return data, nil
 	}
 }
