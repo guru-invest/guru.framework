@@ -70,16 +70,19 @@ func UpdateCell(sheetTitle string, row int, column int, value string) (err error
 	}
 }
 
-func UpdateContent(sheetTitle string, content map[string]interface{}) (err error) {
+func UpdateContent(sheetTitle string, indexColumn string, index string, content map[string]interface{}) (err error) {
 	sheet, err := SpreadSheet.SheetByTitle(sheetTitle)
 	checkError(err)
-	for key, value := range content {
-		for _, columns := range sheet.Rows[0] {
-			if columns.Value == key {
-				for _, columnCell := range sheet.Rows {
-					if columnCell[columns.Column].Value == value {
-						if columns.Value == key {
-							UpdateCell(sheetTitle, int(columnCell[columns.Column].Row), int(columnCell[columns.Column].Column), fmt.Sprintf("%v", value))
+	for _, columns := range sheet.Rows[0] {
+		if columns.Value == indexColumn {
+			for j, columnCell := range sheet.Rows {
+				if columnCell[columns.Column].Value == index {
+					for key, value := range content {
+						for _, tuple := range sheet.Rows[j] {
+							if sheet.Rows[0][tuple.Column].Value == key && value != "" {
+								UpdateCell(sheetTitle, int(tuple.Row), int(tuple.Column), fmt.Sprintf("%v", value))
+								break
+							}
 						}
 					}
 				}
