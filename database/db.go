@@ -25,7 +25,7 @@ func Connect(DataBaseAddress string, DataBaseUsername string, DataBasePassword s
 
 }
 
-func MapResult(rows *sql.Rows, queryName string) map[string][]map[string]interface{}{
+func Mapper(rows *sql.Rows, EntityName string) map[string][]map[string]interface{}{
 	cols, err := rows.Columns()
 	if err != nil {
 		fmt.Println("Failed to map result", err)
