@@ -46,7 +46,7 @@ func Mapper(rows *sql.Rows, EntityName string) map[string][]map[string]interface
 			val := columnPointers[i].(*interface{})
 			m[colName] = *val
 		}
-		mapped[queryName] = append(mapped[queryName], m)
+		mapped[EntityName] = append(mapped[EntityName], m)
 		m = make(map[string]interface{})
 	}
 	return mapped
