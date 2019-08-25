@@ -11,3 +11,13 @@ func GenerateShortId() string{
 	id := shortid.Generate(opt)
 	return id
 }
+
+func GenerateCustomerCode() string{
+	opt := shortid.Options{
+		Number:        8,
+		StartWithYear: true,
+		EndWithHost:   false,
+	}
+	id := shortid.Generate(opt)
+	return id
+}

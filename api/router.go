@@ -3,6 +3,7 @@ package api
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/apex/gateway"
 	"net/http"
 )
 
@@ -69,13 +70,13 @@ func Static(pattern string, directory string){
 func AddRoute(method MethodTypes, pattern string, handler gin.HandlerFunc){
 	_route := mapper{
 		method,                     //Web method da rota
-		"/"+pattern,						// Padrão da rota. Ex: /api/v1/blablabla
+		"/"+pattern,				// Padrão da rota. Ex: /api/v1/blablabla
 		handler,                    // Handler =*
 	}
 	_routes = append(_routes, _route)
 }
 
-func InitRoutering(port string, apiVersion string) {
+func createEngine(apiVersion string) *gin.Engine{
 	router := gin.New()
 	router.Use(gin.Recovery())
 	version := router.Group("/" + apiVersion)
@@ -84,5 +85,14 @@ func InitRoutering(port string, apiVersion string) {
 		addStaticRoutesToMapper(version)
 
 	}
-	router.Run(":" + port)
+	return router
+}
+
+func InitRoutering(port string, apiVersion string, isServerless bool) {
+	router := createEngine(apiVersion)
+	if isServerless {
+		gateway.ListenAndServe(":" + port, router)
+	}else{
+		router.Run(":" + port)
+	}
 }
