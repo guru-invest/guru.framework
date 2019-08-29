@@ -54,7 +54,6 @@ func extractTokenFromRequest(w http.ResponseWriter, r *http.Request) *jwt.Token{
 		} else {
 			fmt.Println("Couldn't handle this token:", err)
 		}
-
 		return token
 	}else{
 		return nil

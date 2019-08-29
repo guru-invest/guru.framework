@@ -1,10 +1,15 @@
 package api
 
-
 import (
-	"github.com/gin-gonic/gin"
+	"context"
 	"github.com/apex/gateway"
+	"github.com/gin-gonic/gin"
+	"log"
 	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
 )
 
 type MethodTypes int
@@ -20,6 +25,7 @@ const (
 type routes []mapper
 var _routes = routes{}
 var _staticRoutes []staticMapper
+var srv *http.Server
 
 type mapper struct{
 	Method MethodTypes
@@ -69,9 +75,9 @@ func Static(pattern string, directory string){
 
 func AddRoute(method MethodTypes, pattern string, handler gin.HandlerFunc){
 	_route := mapper{
-		method,                     //Web method da rota
-		"/"+pattern,				// Padrão da rota. Ex: /api/v1/blablabla
-		handler,                    // Handler =*
+		method,
+		"/"+pattern,
+		handler,
 	}
 	_routes = append(_routes, _route)
 }
@@ -83,7 +89,6 @@ func createEngine(apiVersion string) *gin.Engine{
 	{
 		addRoutesToMapper(version)
 		addStaticRoutesToMapper(version)
-
 	}
 	return router
 }
@@ -93,6 +98,27 @@ func InitRoutering(port string, apiVersion string, isServerless bool) {
 	if isServerless {
 		gateway.ListenAndServe(":" + port, router)
 	}else{
-		router.Run(":" + port)
+		srv = &http.Server{
+			Addr:    ":"+port,
+			Handler: router,
+		}
+		srv.ListenAndServe()
 	}
+}
+
+func RestartRouter() {
+	quit := make(chan os.Signal)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+	<-quit
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	if err := srv.Shutdown(ctx); err != nil {
+		log.Fatal("Server Shutdown:", err)
+	}
+	select {
+	case <-ctx.Done():
+		log.Println("timeout of 5 seconds.")
+	}
+	log.Println("Restarting...")
+	srv.ListenAndServe()
 }

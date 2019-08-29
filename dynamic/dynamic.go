@@ -5,7 +5,7 @@ import shortid "github.com/jasonsoft/go-short-id"
 func GenerateShortId() string{
 	opt := shortid.Options{
 		Number:        6,
-		StartWithYear: true,
+		StartWithYear: false,
 		EndWithHost:   false,
 	}
 	id := shortid.Generate(opt)
@@ -15,7 +15,7 @@ func GenerateShortId() string{
 func GenerateCustomerCode() string{
 	opt := shortid.Options{
 		Number:        8,
-		StartWithYear: true,
+		StartWithYear: false,
 		EndWithHost:   false,
 	}
 	id := shortid.Generate(opt)
