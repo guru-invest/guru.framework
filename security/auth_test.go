@@ -11,11 +11,10 @@ import (
 	"testing"
 )
 func TestTokenGeneration(t *testing.T) {
-	DocumentNumber := "36163719883"
+	DocumentNumber := "5kCTnuVt"
 	Email := "tom@guru.com.vc"
 	Fullname := "Tom teste de geração de token"
-	sEnc := b64.StdEncoding.EncodeToString([]byte(DocumentNumber))
-	authBackend := auth.InitJWTAuthenticationBackend(sEnc)
+	authBackend := auth.InitJWTAuthenticationBackend("")
 	m := make(map[string]string)
 	m["id"] = DocumentNumber
 	m["email"] = Email
@@ -30,7 +29,7 @@ func TestTokenGeneration(t *testing.T) {
 }
 
 func TestTokenValidation(t *testing.T) {
-	tokenString := "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRvbUBndXJ1LmNvbS52YyIsImRvY3VtZW50IjoiMzYxNjM3MTk4ODMiLCJmdWxsbmFtZSI6IlRvbSB0ZXN0ZSBkZSBnZXJhw6fDo28gZGUgdG9rZW4iLCJsb2NhbGUiOiJVMlVnZG05anc2b2dZMjl1YzJWbmRXbDFJR05vWldkaGNpQmhkTU9wSUdGeGRXa3NJSEJ2WkdVZ2RHVnlJR05sY25SbGVtRWdjWFZsSUdWemRHRnRiM01nYVc1MFpYSmxjM05oWkc5eklHVnRJSE5oWW1WeUlIRjFaVzBnZG05anc2b2d3Nmt1SUUxaGJtUmxJSFZ0SUdWdFlXbHNJSEJoY21FZ2RHOXRRR2QxY25VdVkyOXRMblpqSUdVZ2RtRnRiM01nWW1GMFpYSWdkVzBnY0dGd2J5NGdRV0p5WWNPbmIzTWgiLCJleHAiOjE1NjU5NzI2MzR9.eSFpSnaumQvON3ZUcdjytrDCvUmm0l2hUst4HSjqmmA"
+	tokenString := "Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IiIsImRvY3VtZW50IjoibURrcEQzM2ciLCJmdWxsbmFtZSI6Ikd1cnUgYXBwIiwibG9jYWxlIjoiVTJVZ2RtOWp3Nm9nWTI5dWMyVm5kV2wxSUdOb1pXZGhjaUJoZE1PcElHRnhkV2tzSUhCdlpHVWdkR1Z5SUdObGNuUmxlbUVnY1hWbElHVnpkR0Z0YjNNZ2FXNTBaWEpsYzNOaFpHOXpJR1Z0SUhOaFltVnlJSEYxWlcwZ2RtOWp3Nm9ndzZrdUlFMWhibVJsSUhWdElHVnRZV2xzSUhCaGNtRWdkRzl0UUdkMWNuVXVZMjl0TG5aaklHVWdkbUZ0YjNNZ1ltRjBaWElnZFcwZ2NHRndieTRnUVdKeVljT25iM01oIiwiZXhwIjoxNTY3NzA2MDU5fQ.DWhcVVJ5eQ6Sj4EwDLBUhrGQ8Hn-5mTQD3596jHHQQVVVpepYojSRYOFMq1b8LMrFkLNl77IRcFdQFLby_2q7w"
 	tokenString = strings.Replace(tokenString, "Bearer ","",1)
 	if tokenString != "" {
 		token, err := jwt.ParseWithClaims(tokenString, &claims.Claims{}, func(token *jwt.Token) (interface{}, error) {

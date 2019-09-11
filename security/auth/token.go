@@ -10,7 +10,7 @@ type JWTAuthenticationStructure struct {
 }
 
 const (
-	tokenDuration = 10
+	tokenDurationMinute = 260000
 	expireOffset  = 3600
 )
 
@@ -52,8 +52,8 @@ func generateClaims(c map[string]string) *jwt.Token{
 		c["fullname"],
 		c["locale"],
 		jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(time.Duration(time.Minute * tokenDuration)).Unix(),
+			ExpiresAt: time.Now().Add(time.Duration(time.Minute * tokenDurationMinute)).Unix(),
 		},
 	}
-	return jwt.NewWithClaims(jwt.SigningMethodHS256, claim)
+	return jwt.NewWithClaims(jwt.SigningMethodHS512, claim)
 }
