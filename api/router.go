@@ -1,14 +1,10 @@
 package api
 
 import (
-	"context"
+	"fmt"
 	"github.com/apex/gateway"
 	"github.com/gin-gonic/gin"
-	"log"
 	"net/http"
-	"os"
-	"os/signal"
-	"syscall"
 	"time"
 )
 
@@ -83,7 +79,21 @@ func AddRoute(method MethodTypes, pattern string, handler gin.HandlerFunc){
 }
 
 func createEngine(apiVersion string) *gin.Engine{
+	gin.SetMode(gin.ReleaseMode)
 	router := gin.New()
+	router.Use(gin.LoggerWithFormatter(func(param gin.LogFormatterParams) string {
+		return fmt.Sprintf("%s - [%s] \"%s %s %s %d %s \"%s\" %s\"\n",
+			param.ClientIP,
+			param.TimeStamp.Format(time.RFC1123),
+			param.Method,
+			param.Path,
+			param.Request.Proto,
+			param.StatusCode,
+			param.Latency,
+			param.Request.UserAgent(),
+			param.ErrorMessage,
+		)
+	}))
 	router.Use(gin.Recovery())
 	version := router.Group("/" + apiVersion)
 	{
@@ -104,21 +114,4 @@ func InitRoutering(port string, apiVersion string, isServerless bool) {
 		}
 		srv.ListenAndServe()
 	}
-}
-
-func RestartRouter() {
-	quit := make(chan os.Signal)
-	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
-	<-quit
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-	if err := srv.Shutdown(ctx); err != nil {
-		log.Fatal("Server Shutdown:", err)
-	}
-	select {
-	case <-ctx.Done():
-		log.Println("timeout of 5 seconds.")
-	}
-	log.Println("Restarting...")
-	srv.ListenAndServe()
 }
