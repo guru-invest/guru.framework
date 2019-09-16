@@ -1,27 +1,22 @@
 package api
 
 import (
-	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"io/ioutil"
 )
 
-func Extract(v interface{}, c *gin.Context) (interface{}){
+func Extract(v interface{}, c *gin.Context) ([]byte){
 	reqBody, err := ioutil.ReadAll(c.Request.Body)
 	if err != nil{
 		Error400(err, c)
 	}
-	err = json.Unmarshal(reqBody, &v)
-	if err != nil{
-		Error400(err, c)
-	}
-	return v
+	return reqBody
 }
 
 func Error404(err error, c *gin.Context){
 	msg := make(map[string]interface{})
 	msg["error"] = "Not found - " + err.Error()
-	c.AbortWithStatusJSON(400, msg)
+	c.AbortWithStatusJSON(404, msg)
 }
 
 func Error400(err error, c *gin.Context){
@@ -33,5 +28,5 @@ func Error400(err error, c *gin.Context){
 func Error500(err error, c *gin.Context){
 	msg := make(map[string]interface{})
 	msg["error"] = err.Error()
-	c.AbortWithStatusJSON(400, msg)
+	c.AbortWithStatusJSON(500, msg)
 }
