@@ -16,3 +16,24 @@ const (
 	Status_BadGateway			 = 502
 	Status_ServiceUnavailable	 = 503
 )
+
+var statusText = map[int]string{
+	Status_Ok:				"OK",
+	Status_Created:			"Created",
+	Status_Accepted:		"Accepted",
+	Status_NoContent:		"No Content",
+
+	Status_BadRequest:		"Bad Request",
+	Status_Unauthorized:	"Unauthorized",
+	Status_Forbidden:		"Forbidden",
+	Status_NotFound:		"Not Found",
+	Status_RequestTimeout:	"Request Timeout",
+
+	Status_InternalServerError:		"Internal Server Error",
+	Status_BadGateway:				"Bad Gateway",
+	Status_ServiceUnavailable:		"Service Unavailable",
+}
+
+func StatusDescription(code int) string {
+	return statusText[code]
+}
