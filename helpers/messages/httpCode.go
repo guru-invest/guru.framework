@@ -1,39 +1,38 @@
-package helpers
+package messages
 
-const (
-	Status_Ok					 = 200
-	Status_Created				 = 201
-	Status_Accepted				 = 202
-	Status_NoContent			 = 204
+type httpCode = int
 
-	Status_BadRequest			 = 400
-	Status_Unauthorized			 = 401
-	Status_Forbidden			 = 403
-	Status_NotFound				 = 404
-	Status_RequestTimeout		 = 408
-
-	Status_InternalServerError	 = 500
-	Status_BadGateway			 = 502
-	Status_ServiceUnavailable	 = 503
-)
-
-var statusText = map[int]string{
-	Status_Ok:				"OK",
-	Status_Created:			"Created",
-	Status_Accepted:		"Accepted",
-	Status_NoContent:		"No Content",
-
-	Status_BadRequest:		"Bad Request",
-	Status_Unauthorized:	"Unauthorized",
-	Status_Forbidden:		"Forbidden",
-	Status_NotFound:		"Not Found",
-	Status_RequestTimeout:	"Request Timeout",
-
-	Status_InternalServerError:		"Internal Server Error",
-	Status_BadGateway:				"Bad Gateway",
-	Status_ServiceUnavailable:		"Service Unavailable",
+type listCode struct{
+	//200
+	Ok        httpCode
+	Created   httpCode
+	Accepted  httpCode
+	NoContent httpCode
+	//400
+	BadRequest     httpCode
+	Unauthorized   httpCode
+	Forbidden      httpCode
+	NotFound       httpCode
+	RequestTimeout httpCode
+	//500
+	InternalServerError httpCode
+	BadGateway          httpCode
+	ServiceUnavailable  httpCode
 }
 
-func StatusDescription(code int) string {
-	return statusText[code]
+var HttpCode = &listCode{
+	Ok: 200,
+	Created: 201,
+	Accepted: 202,
+	NoContent: 204,
+
+	BadRequest: 400,
+	Unauthorized: 401,
+	Forbidden: 403,
+	NotFound: 404,
+	RequestTimeout: 408,
+
+	InternalServerError: 500,
+	BadGateway: 502,
+	ServiceUnavailable: 503,
 }
