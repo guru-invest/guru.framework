@@ -2,5 +2,7 @@
 Canivete suiço para desenvolvimento
 
 
-**Primeiro uso** ./add-dependency <uri> (substitui o go get)  
-**Compilar:** ./build
+**Primeiro uso** ./environment.sh
+**Compilar:** ./build.sh
+
+**Adicionar dependencias** govendor fetch <uri> substitui go get
