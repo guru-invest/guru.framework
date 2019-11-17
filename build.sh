@@ -46,24 +46,30 @@ cd $BUILD_DIR
 mkdir -p bin
 
 function build {
-    CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build $1
+    cd $1
+    BINARY="$(basename $1)"
+    CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o $GOBIN/$BINARY &>/dev/null
+    cd $BUILD_DIR
+    #go install $1 &>/dev/null
     EXIT_STATUS=$?
     if [ $EXIT_STATUS == 0 ]; then
       echo "Build succeeded"
     else
-      echo "Build failed"
+      getDirectory $1
     fi
 }
 
-for f in $BUILD_DIR/src/*; do
-    if [ -d "$f" ]; then
-        echo "building $f"
-        go fmt
-        build $f
-    fi
-done
+function getDirectory {
+    for f in $1/*; do
+        if [ -d "$f" ]; then
+            echo "Building $(basename $f)"
+            go fmt
+            build $f
+        fi
+    done
+}
 
-
+getDirectory $BUILD_DIR/src
 
 
 # Change back to where we were

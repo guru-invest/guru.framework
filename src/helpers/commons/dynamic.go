@@ -1,6 +1,6 @@
 package commons
 
-import shortid "src/github.com/jasonsoft/go-short-id"
+import shortid "github.com/jasonsoft/go-short-id"
 
 func GenerateShortId(characters int) string{
 	opt := shortid.Options{

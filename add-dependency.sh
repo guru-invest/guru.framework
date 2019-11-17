@@ -11,5 +11,5 @@ BUILD_DIR="$(cd -P "$(dirname "$SOURCE")" && pwd)"
 # Derive the project name from the directory
 PROJECT="$(basename $BUILD_DIR)"
 
-go mod init
-go mod vendor
+
+go get $1

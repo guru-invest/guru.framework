@@ -1,5 +1,6 @@
 # guru.framework
 Canivete suiço para desenvolvimento
 
-**Adicionar dependencia:** ./add-dependency <uri> (substitui o go get)  
+
+**Primeiro uso** ./add-dependency <uri> (substitui o go get)  
 **Compilar:** ./build

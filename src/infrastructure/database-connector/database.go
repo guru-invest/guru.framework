@@ -1,10 +1,10 @@
 package database_connector
 
 import (
-	"errors"
 	"fmt"
-	"src/github.com/jinzhu/gorm"
-	_ "src/github.com/jinzhu/gorm/dialects/postgres"
+	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/postgres"
+	"github.com/pkg/errors"
 )
 
 func ConnectToDatabase(url string, username string, password string, dbname string, host string, port string) (*gorm.DB, error){

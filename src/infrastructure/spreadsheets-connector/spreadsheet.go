@@ -2,9 +2,9 @@ package spreadsheets_connector
 
 import (
 	"fmt"
-	"src/golang.org/x/net/context"
-	"src/golang.org/x/oauth2/google"
-	"src/gopkg.in/Iwark/spreadsheet.v2"
+	"golang.org/x/net/context"
+	"golang.org/x/oauth2/google"
+	"gopkg.in/Iwark/spreadsheet.v2"
 	"io/ioutil"
 	"strconv"
 )
