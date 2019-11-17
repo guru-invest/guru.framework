@@ -1,5 +1,6 @@
 # Created by https://www.gitignore.io/api/go,linux,windows,jetbrains
 
+bin/*
 ### Go ###
 # Binaries for programs and plugins
 *.exe
