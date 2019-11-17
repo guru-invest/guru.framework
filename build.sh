@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 # Expects the directory structure:
 # .
@@ -44,19 +44,26 @@ export GOBIN=$BUILD_DIR/bin
 # Build the project
 cd $BUILD_DIR
 mkdir -p bin
-for f in src/*; do
+
+function build {
+    CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build $1
+    EXIT_STATUS=$?
+    if [ $EXIT_STATUS == 0 ]; then
+      echo "Build succeeded"
+    else
+      echo "Build failed"
+    fi
+}
+
+for f in $BUILD_DIR/src/*; do
     if [ -d "$f" ]; then
-        CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go install $BUILD_DIR/$f
-
-        EXIT_STATUS=$?
-
-        if [ $EXIT_STATUS == 0 ]; then
-          echo "Build succeeded"
-        else
-          echo "Build failed"
-        fi
+        echo "building $f"
+        go fmt
+        build $f
     fi
 done
+
+
 
 
 # Change back to where we were

@@ -13,7 +13,3 @@ PROJECT="$(basename $BUILD_DIR)"
 
 go mod init
 go mod vendor
-
-go get -u $1 >> /dev/null
-mkdir -p $BUILD_DIR/vendor/$1
-cp -r $GOPATH/src/$1/ $BUILD_DIR/vendor/$1
