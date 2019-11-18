@@ -44,6 +44,7 @@ func TestTokenGeneration(t *testing.T) {
 	}
 }
 
+
 func TestTokenValidation(t *testing.T) {
 
 	tokenString := createValidToken().Token
