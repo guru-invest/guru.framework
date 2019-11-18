@@ -331,6 +331,10 @@
 			"path": "gopkg.in/yaml.v2",
 			"revision": "f90ceb4f409096b60e2e9076b38b304b8246e5fa",
 			"revisionTime": "2019-11-04T18:03:43Z"
+		},
+		{
+			"path": "text/template",
+			"revision": ""
 		}
 	],
 	"rootPath": "github.com/guru-invest/guru.framework"
