@@ -8,7 +8,11 @@ import (
 	"net/http"
 )
 
-func Get(uri string) ([]byte,error) {
+type HttpClient struct{
+
+}
+
+func (c *HttpClient) Get(uri string) ([]byte,error) {
 	client := &http.Client{}
 	req, _ := http.NewRequest("GET", uri, nil)
 	res, err := client.Do(req)
@@ -23,7 +27,7 @@ func Get(uri string) ([]byte,error) {
 	return []byte{}, errors.Wrap(err, "Error on executing get request")
 }
 
-func Post(uri string, v interface{}) ([]byte,error) {
+func (c *HttpClient) Post(uri string, v interface{}) ([]byte,error) {
 
 	requestBody, err := json.Marshal(v)
 	if err != nil {
