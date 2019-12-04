@@ -2,39 +2,49 @@ package middlewares
 
 import (
 	b64 "encoding/base64"
+	"encoding/json"
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"github.com/guru-invest/guru.framework/src/security/claims"
-	"github.com/dgrijalva/jwt-go"
 	"net/http"
 	"strings"
+
+	"github.com/guru-invest/guru.framework/src/helpers/messages"
+	"github.com/guru-invest/guru.framework/src/router/returns"
+
+	"github.com/dgrijalva/jwt-go"
+	"github.com/guru-invest/guru.framework/src/security/claims"
 )
 
-func Interceptor(next gin.HandlerFunc, parameter string, anonymous func(string)) (gin.HandlerFunc){
-	return gin.HandlerFunc(func(c *gin.Context){
+func Interceptor(next http.HandlerFunc, parameter string, anonymous func(string)) http.HandlerFunc {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		anonymous(parameter)
-		next(c)
+		next(w, r)
 	})
 }
 
-func RequireTokenAuthentication(next gin.HandlerFunc) gin.HandlerFunc{
-	return gin.HandlerFunc(func(c *gin.Context) {
-		token := extractTokenFromRequest(c.Writer, c.Request)
-		if token != nil{
-			if token.Valid {
-				next(c)
-			}else{
-				c.AbortWithStatusJSON(400, "Invalid Token. You are no authorized to perform this action.")
-			}
+func RequireTokenAuthentication(next http.HandlerFunc) http.HandlerFunc {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		token := extractTokenFromRequest(r)
+		if token == nil {
+			w.WriteHeader(messages.HttpCode.Unauthorized)
+			resp, _ := json.Marshal(returns.UnauthorizedError())
+			_, _ = w.Write(resp)
+			return
+		}
+
+		if token.Valid {
+			next(w, r)
 		} else {
-			c.AbortWithStatusJSON(200, "You are not authorized to perform this action.")
+			w.WriteHeader(messages.HttpCode.Unauthorized)
+			resp, _ := json.Marshal(returns.UnauthorizedError())
+			_, _ = w.Write(resp)
+			return
 		}
 	})
 }
 
-func extractTokenFromRequest(w http.ResponseWriter, r *http.Request) *jwt.Token{
+func extractTokenFromRequest(r *http.Request) *jwt.Token {
 	tokenString := r.Header.Get("Authorization")
-	tokenString = strings.Replace(tokenString, "Bearer ","",1)
+	tokenString = strings.Replace(tokenString, "Bearer ", "", 1)
 	if tokenString != "" {
 		token, err := jwt.ParseWithClaims(tokenString, &claims.Claims{}, func(token *jwt.Token) (interface{}, error) {
 
@@ -60,13 +70,12 @@ func extractTokenFromRequest(w http.ResponseWriter, r *http.Request) *jwt.Token{
 			fmt.Println("Couldn't handle this token:", err)
 		}
 		return token
-	}else{
+	} else {
 		return nil
 	}
 }
 
-
-func includeFormData(r *http.Request, claims *claims.Claims){
+func includeFormData(r *http.Request, claims *claims.Claims) {
 	r.Header.Add("userId", claims.DocumentNumber)
 	r.Header.Add("email", claims.Email)
 }
