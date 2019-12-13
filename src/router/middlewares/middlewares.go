@@ -17,7 +17,7 @@ import (
 func Interceptor(next http.HandlerFunc, parameter string, anonymous func(string)) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		anonymous(parameter)
-		next(w, r)
+		next.ServeHTTP(w, r)
 	})
 }
 
@@ -32,7 +32,7 @@ func RequireTokenAuthentication(next http.HandlerFunc) http.HandlerFunc {
 		}
 
 		if token.Valid {
-			next(w, r)
+			next.ServeHTTP(w, r)
 		} else {
 			w.WriteHeader(messages.HttpCode.Unauthorized)
 			resp, _ := json.Marshal(returns.UnauthorizedError())
