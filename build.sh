@@ -6,7 +6,6 @@ function loadDependencies {
     govendor fetch gopkg.in/Iwark/spreadsheet.v2
     govendor fetch github.com/jasonsoft/go-short-id
     govendor fetch github.com/apex/gateway
-    govendor fetch github.com/gin-gonic/gin
     govendor fetch github.com/jinzhu/gorm
     govendor fetch github.com/dgrijalva/jwt-go
     govendor fetch github.com/pkg/errors
