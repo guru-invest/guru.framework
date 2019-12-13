@@ -1,117 +1,40 @@
 package router
 
 import (
-	"github.com/apex/gateway"
-	"fmt"
-	"github.com/gin-gonic/gin"
 	"net/http"
-	"time"
+
+	"github.com/gorilla/mux"
 )
 
-type MethodTypes int
+var router *mux.Router
 
-const (
-	GET 	 MethodTypes = iota
-	POST
-	PUT
-	DELETE
-	OPTIONS
-)
-
-type routes []mapper
-var _routes = routes{}
-var _staticRoutes []staticMapper
-var srv *http.Server
-
-type mapper struct{
-	Method MethodTypes
-	Pattern string
-	Handler gin.HandlerFunc
+type Route struct {
+	pattern string
+	handler http.Handler
+	*mux.Route
 }
 
-type staticMapper struct{
-	Pattern string
-	Directory string
+type GuruRouter struct {
+	routes []*Route
 }
 
-func addRoutesToMapper(router gin.IRouter){
-	for _, route := range _routes  {
-		switch route.Method {
-		case POST:
-			router.POST(route.Pattern, route.Handler)
-		case PUT:
-			router.PUT(route.Pattern, route.Handler)
-		case DELETE:
-			router.DELETE(route.Pattern, route.Handler)
-		case OPTIONS:
-			router.OPTIONS(route.Pattern, route.Handler)
-		default:
-			router.GET(route.Pattern, route.Handler)
-		}
-	}
+func NewRouter() {
+	router = mux.NewRouter()
 }
 
-
-func addStaticRoutesToMapper(router gin.IRouter){
-	if len(_staticRoutes) >0{
-		for _,route := range _staticRoutes{
-			router.StaticFS(route.Pattern, http.Dir(route.Directory))
-		}
-	}
+func (h *GuruRouter) Handler(method string, pattern string, handler http.Handler) {
+	router.Handle(pattern, handler).Methods(method)
 }
 
-func Static(pattern string, directory string){
-	_route := staticMapper{
-		Pattern: pattern,
-		Directory: directory,
-	}
-	_staticRoutes = append(_staticRoutes, _route)
+func (h *GuruRouter) HandleFunc(method string, pattern string, handler func(http.ResponseWriter, *http.Request)) {
+	router.HandleFunc(pattern, handler).Methods(method)
 }
 
-
-func AddRoute(method MethodTypes, pattern string, handler gin.HandlerFunc){
-	_route := mapper{
-		method,
-		"/"+pattern,
-		handler,
-	}
-	_routes = append(_routes, _route)
+func (h *GuruRouter) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	router.ServeHTTP(w, r)
 }
 
-func createEngine(apiVersion string) *gin.Engine{
-	gin.SetMode(gin.ReleaseMode)
-	router := gin.New()
-	router.Use(gin.LoggerWithFormatter(func(param gin.LogFormatterParams) string {
-		return fmt.Sprintf("%s - [%s] \"%s %s %s %d %s \"%s\" %s\"\n",
-			param.ClientIP,
-			param.TimeStamp.Format(time.RFC1123),
-			param.Method,
-			param.Path,
-			param.Request.Proto,
-			param.StatusCode,
-			param.Latency,
-			param.Request.UserAgent(),
-			param.ErrorMessage,
-		)
-	}))
-	router.Use(gin.Recovery())
-	version := router.Group("/" + apiVersion)
-	{
-		addRoutesToMapper(version)
-		addStaticRoutesToMapper(version)
-	}
-	return router
-}
-
-func InitRoutering(port string, apiVersion string, isServerless bool) {
-	router := createEngine(apiVersion)
-	if isServerless {
-		_ = gateway.ListenAndServe(":"+port, router)
-	}else{
-		srv = &http.Server{
-			Addr:    ":"+port,
-			Handler: router,
-		}
-		_ = srv.ListenAndServe()
-	}
+func ExtractUrlWildcard(r *http.Request, param string) string {
+	params := mux.Vars(r)
+	return params[param]
 }
