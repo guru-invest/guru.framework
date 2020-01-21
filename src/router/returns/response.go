@@ -69,11 +69,13 @@ func respond(w http.ResponseWriter, code int, src interface{}) {
 }
 
 // Error is wrapped Respond when error response
-func Error(w http.ResponseWriter, code int, err error, msg string) {
-	e := &Response{
-		IsFailure: true,
-		Message:   msg,
-		Result:    err,
+func Error(w http.ResponseWriter, code int, err interface{}, msgFriendly string) {
+	e := struct {
+		ErrorFriendly string
+		Error         interface{}
+	}{
+		ErrorFriendly: msgFriendly,
+		Error:         err,
 	}
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	respond(w, code, e)
@@ -82,11 +84,6 @@ func Error(w http.ResponseWriter, code int, err error, msg string) {
 // JSON is wrapped Respond when success response
 //src is message success or struct/json/interface result
 func Ok(w http.ResponseWriter, code int, src interface{}) {
-	r := &Response{
-		IsFailure: false,
-		Message:   "",
-		Result:    src,
-	}
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	respond(w, code, r)
+	respond(w, code, src)
 }
