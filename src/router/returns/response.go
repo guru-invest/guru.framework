@@ -71,8 +71,8 @@ func respond(w http.ResponseWriter, code int, src interface{}) {
 // Error is wrapped Respond when error response
 func Error(w http.ResponseWriter, code int, err interface{}, msgFriendly string) {
 	e := struct {
-		ErrorFriendly string
-		Error         interface{}
+		ErrorFriendly string      `json:"error_friendly"`
+		Error         interface{} `json:"error"`
 	}{
 		ErrorFriendly: msgFriendly,
 		Error:         err,
