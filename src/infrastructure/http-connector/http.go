@@ -41,6 +41,7 @@ func (c *HttpClient) Post(uri string, v interface{}, headers map[string]string) 
 	for k, v := range headers {
 		req.Header.Set(k, v)
 	}
+
 	res, err := client.Do(req)
 	if err != nil {
 		return []byte{}, errors.Wrap(err, "Error on executing request")
