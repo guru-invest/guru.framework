@@ -106,14 +106,6 @@ func NewZSliceCmdResult(val []Z, err error) *ZSliceCmd {
 	return &cmd
 }
 
-// NewZWithKeyCmdResult returns a NewZWithKeyCmd initialised with val and err for testing
-func NewZWithKeyCmdResult(val *ZWithKey, err error) *ZWithKeyCmd {
-	var cmd ZWithKeyCmd
-	cmd.val = val
-	cmd.setErr(err)
-	return &cmd
-}
-
 // NewScanCmdResult returns a ScanCmd initialised with val and err for testing
 func NewScanCmdResult(keys []string, cursor uint64, err error) *ScanCmd {
 	var cmd ScanCmd
@@ -142,22 +134,6 @@ func NewGeoLocationCmdResult(val []GeoLocation, err error) *GeoLocationCmd {
 // NewCommandsInfoCmdResult returns a CommandsInfoCmd initialised with val and err for testing
 func NewCommandsInfoCmdResult(val map[string]*CommandInfo, err error) *CommandsInfoCmd {
 	var cmd CommandsInfoCmd
-	cmd.val = val
-	cmd.setErr(err)
-	return &cmd
-}
-
-// NewXMessageSliceCmdResult returns a XMessageSliceCmd initialised with val and err for testing
-func NewXMessageSliceCmdResult(val []XMessage, err error) *XMessageSliceCmd {
-	var cmd XMessageSliceCmd
-	cmd.val = val
-	cmd.setErr(err)
-	return &cmd
-}
-
-// NewXStreamSliceCmdResult returns a XStreamSliceCmd initialised with val and err for testing
-func NewXStreamSliceCmdResult(val []XStream, err error) *XStreamSliceCmd {
-	var cmd XStreamSliceCmd
 	cmd.val = val
 	cmd.setErr(err)
 	return &cmd
