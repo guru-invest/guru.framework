@@ -7,6 +7,8 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"sync"
+	"time"
 
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
@@ -42,16 +44,20 @@ func NewService() (s *Service, err error) {
 // NewServiceWithClient makes a new service by the client.
 func NewServiceWithClient(client *http.Client) *Service {
 	return &Service{
-		baseURL: baseURL,
-		client:  client,
+		baseURL:                  baseURL,
+		client:                   client,
+		m:                        new(sync.RWMutex),
+		configForSpreadsheetByID: make(map[string]spreadsheetConfig, 0),
 	}
 }
 
 // Service represents a Sheets API service instance.
 // Service is the main entry point into using this package.
 type Service struct {
-	baseURL string
-	client  *http.Client
+	baseURL                  string
+	client                   *http.Client
+	m                        *sync.RWMutex
+	configForSpreadsheetByID map[string]spreadsheetConfig
 }
 
 // CreateSpreadsheet creates a spreadsheet with the given title
@@ -77,9 +83,37 @@ func (s *Service) CreateSpreadsheet(spreadsheet Spreadsheet) (resp Spreadsheet, 
 	return s.FetchSpreadsheet(resp.ID)
 }
 
+type spreadsheetConfig struct {
+	cacheInterval     time.Duration
+	lastCachedAt      time.Time
+	cachedSpreadsheet Spreadsheet
+}
+
+// FetchSpreadsheetOption is the option for FetchSpreadsheet function
+type FetchSpreadsheetOption func(*spreadsheetConfig)
+
+// WithCache gives a cacheInterval option for FetchSpreadsheet function
+func WithCache(interval time.Duration) FetchSpreadsheetOption {
+	return func(config *spreadsheetConfig) {
+		config.cacheInterval = interval
+	}
+}
+
 // FetchSpreadsheet fetches the spreadsheet by the id.
-func (s *Service) FetchSpreadsheet(id string) (spreadsheet Spreadsheet, err error) {
-	fields := "spreadsheetId,properties.title,sheets(properties,data.rowData.values(formattedValue))"
+func (s *Service) FetchSpreadsheet(id string, options ...FetchSpreadsheetOption) (spreadsheet Spreadsheet, err error) {
+	s.m.RLock()
+	config := s.configForSpreadsheetByID[id]
+	s.m.RUnlock()
+	for _, o := range options {
+		o(&config)
+	}
+
+	if config.cacheInterval > 0 && time.Now().Sub(config.lastCachedAt.Add(config.cacheInterval)) <= 0 {
+		// use cache
+		return config.cachedSpreadsheet, nil
+	}
+
+	fields := "spreadsheetId,properties.title,sheets(properties,data.rowData.values(formattedValue,note))"
 	fields = url.QueryEscape(fields)
 	path := fmt.Sprintf("/spreadsheets/%s?fields=%s", id, fields)
 	body, err := s.get(path)
@@ -91,6 +125,15 @@ func (s *Service) FetchSpreadsheet(id string) (spreadsheet Spreadsheet, err erro
 		return
 	}
 	spreadsheet.service = s
+
+	if config.cacheInterval > 0 {
+		config.cachedSpreadsheet = spreadsheet
+		config.cachedSpreadsheet.cached = true
+		config.lastCachedAt = time.Now()
+		s.m.Lock()
+		s.configForSpreadsheetByID[id] = config
+		s.m.Unlock()
+	}
 	return
 }
 
@@ -156,7 +199,11 @@ func (s *Service) SyncSheet(sheet *Sheet) (err error) {
 			return
 		}
 	}
-	err = s.syncCells(sheet)
+	r, err := newUpdateRequest(sheet.Spreadsheet)
+	if err != nil {
+		return
+	}
+	err = r.UpdateCells(sheet).Do()
 	if err != nil {
 		return
 	}
@@ -206,28 +253,6 @@ func (s *Service) DeleteColumns(sheet *Sheet, start, end int) (err error) {
 		return
 	}
 	err = r.DeleteDimension(sheet, "COLUMNS", start, end).Do()
-	return
-}
-
-func (s *Service) syncCells(sheet *Sheet) (err error) {
-	path := fmt.Sprintf("/spreadsheets/%s/values:batchUpdate", sheet.Spreadsheet.ID)
-	params := map[string]interface{}{
-		"valueInputOption": "USER_ENTERED",
-		"data":             make([]map[string]interface{}, 0, len(sheet.modifiedCells)),
-	}
-	for _, cell := range sheet.modifiedCells {
-		valueRange := map[string]interface{}{
-			"range":          sheet.Properties.Title + "!" + cell.Pos(),
-			"majorDimension": "COLUMNS",
-			"values": [][]string{
-				[]string{
-					cell.Value,
-				},
-			},
-		}
-		params["data"] = append(params["data"].([]map[string]interface{}), valueRange)
-	}
-	_, err = sheet.Spreadsheet.service.post(path, params)
 	return
 }
 

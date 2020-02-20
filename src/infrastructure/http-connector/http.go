@@ -3,19 +3,19 @@ package http_connector
 import (
 	"bytes"
 	"encoding/json"
-	"github.com/pkg/errors"
 	"io/ioutil"
 	"net/http"
+
+	"github.com/pkg/errors"
 )
 
-type HttpClient struct{
-
+type HttpClient struct {
 }
 
-func (c *HttpClient) Get(uri string, headers map[string]string) ([]byte,error) {
+func (c *HttpClient) Get(uri string, headers map[string]string) ([]byte, error) {
 	client := &http.Client{}
 	req, _ := http.NewRequest("GET", uri, nil)
-	for k, v := range headers{
+	for k, v := range headers {
 		req.Header.Set(k, v)
 	}
 	res, err := client.Do(req)
@@ -30,17 +30,18 @@ func (c *HttpClient) Get(uri string, headers map[string]string) ([]byte,error) {
 	return []byte{}, errors.Wrap(err, "Error on executing get request")
 }
 
-func (c *HttpClient) Post(uri string, v interface{}, headers map[string]string) ([]byte,error) {
+func (c *HttpClient) Post(uri string, v interface{}, headers map[string]string) ([]byte, error) {
 
 	requestBody, err := json.Marshal(v)
 	if err != nil {
 		return []byte{}, errors.Wrap(err, "Error on parsing request body")
 	}
 	client := &http.Client{}
-	req, _ := http.NewRequest("GET", uri, bytes.NewBuffer(requestBody))
-	for k, v := range headers{
+	req, _ := http.NewRequest("POST", uri, bytes.NewBuffer(requestBody))
+	for k, v := range headers {
 		req.Header.Set(k, v)
 	}
+
 	res, err := client.Do(req)
 	if err != nil {
 		return []byte{}, errors.Wrap(err, "Error on executing request")
