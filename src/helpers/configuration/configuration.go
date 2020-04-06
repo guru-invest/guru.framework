@@ -1,7 +1,10 @@
 package configuration
 
 import (
+	b "encode/base64"
 	"encoding/json"
+
+	log "github.com/sirupsen/logrus"
 
 	http_connector "github.com/guru-invest/guru.framework/src/infrastructure/http-connector"
 )

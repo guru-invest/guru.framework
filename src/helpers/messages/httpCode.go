@@ -2,7 +2,7 @@ package messages
 
 type httpCode = int
 
-type listCode struct{
+type listCode struct {
 	//200
 	Ok        httpCode
 	Created   httpCode
@@ -21,18 +21,18 @@ type listCode struct{
 }
 
 var HttpCode = &listCode{
-	Ok: 200,
-	Created: 201,
-	Accepted: 202,
+	Ok:        200,
+	Created:   201,
+	Accepted:  202,
 	NoContent: 204,
 
-	BadRequest: 400,
-	Unauthorized: 401,
-	Forbidden: 403,
-	NotFound: 404,
+	BadRequest:     400,
+	Unauthorized:   401,
+	Forbidden:      403,
+	NotFound:       404,
 	RequestTimeout: 408,
 
 	InternalServerError: 500,
-	BadGateway: 502,
-	ServiceUnavailable: 503,
+	BadGateway:          502,
+	ServiceUnavailable:  503,
 }
