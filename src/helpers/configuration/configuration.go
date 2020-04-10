@@ -28,6 +28,15 @@ func Load(url string) []byte {
 	return ret
 }
 
+type kvPair []struct {
+	LockIndex   int    `json:"LockIndex"`
+	Key         string `json:"Key"`
+	Flags       int    `json:"Flags"`
+	Value       string `json:"Value"`
+	CreateIndex int    `json:"CreateIndex"`
+	ModifyIndex int    `json:"ModifyIndex"`
+}
+
 func (kv kvPair) decodeString() []byte {
 	rawString, err := b.StdEncoding.DecodeString(kv[0].Value)
 	if err != nil {
