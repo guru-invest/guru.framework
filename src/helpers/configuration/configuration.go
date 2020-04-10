@@ -1,7 +1,7 @@
 package configuration
 
 import (
-	b "encode/base64"
+	b "encoding/base64"
 	"encoding/json"
 
 	log "github.com/sirupsen/logrus"

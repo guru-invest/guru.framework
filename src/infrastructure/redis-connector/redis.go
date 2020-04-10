@@ -20,7 +20,7 @@ func (p *DbnoPool) Get() redis.Conn {
 	return conn
 }
 
-func InitPool(poolSize int, server string, port string) {
+func InitPool(poolSize int, server string, port string, database int) {
 	pool = &DbnoPool{
 		&redis.Pool{
 			MaxIdle:   poolSize,
@@ -33,7 +33,7 @@ func InitPool(poolSize int, server string, port string) {
 				return conn, err
 			},
 			Wait: true,
-		}, 0,
+		}, database,
 	}
 }
 
