@@ -1,7 +1,7 @@
 package configuration
 
 import (
-	b "encoding/base64"
+	"encoding/base64"
 	"encoding/json"
 
 	log "github.com/sirupsen/logrus"
@@ -38,7 +38,7 @@ type kvPair []struct {
 }
 
 func (kv kvPair) decodeString() []byte {
-	rawString, err := b.StdEncoding.DecodeString(kv[0].Value)
+	rawString, err := base64.StdEncoding.DecodeString(kv[0].Value)
 	if err != nil {
 		log.WithFields(log.Fields{
 			"Error": err.Error(),
