@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 
 	"github.com/pkg/errors"
 )
@@ -45,11 +46,12 @@ func (c *HttpClient) Post(uri string, v interface{}, headers map[string]string) 
 	res, err := client.Do(req)
 	if err != nil {
 		return []byte{}, errors.Wrap(err, "Error on executing request")
-	} else {
-		if res.Status == "200 OK" {
-			reqBody, _ := ioutil.ReadAll(res.Body)
-			return reqBody, nil
-		}
 	}
-	return []byte{}, errors.Wrap(err, "Error on executing request")
+
+	if res.StatusCode >= 200 && res.StatusCode <= 299 {
+		reqBody, _ := ioutil.ReadAll(res.Body)
+		return reqBody, nil
+	}
+
+	return []byte{}, errors.Wrap(errors.New(strconv.Itoa(res.StatusCode)), res.Status)
 }
