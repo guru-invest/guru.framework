@@ -4,7 +4,6 @@ import (
 	"log"
 
 	"github.com/gomodule/redigo/redis"
-	"github.com/guru-invest/guru.feeder.marketdata/src/health"
 	"github.com/guru-invest/guru.framework/src/helpers/errors"
 )
 
@@ -62,7 +61,6 @@ func GetAll(keys []interface{}) (interface{}, error) {
 	defer conn.Close()
 	values, err := redis.Strings(conn.Do("MGET", keys...))
 	if err != nil {
-		health.HEALTH.ConnectionStatus = 503
 		return nil, errors.Throw(err, "error on get information on redis")
 	}
 	return values, nil
