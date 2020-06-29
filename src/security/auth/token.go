@@ -1,19 +1,19 @@
 package auth
 
 import (
-	"github.com/guru-invest/guru.framework/src/security/claims"
-	"github.com/dgrijalva/jwt-go"
 	"time"
+
+	"github.com/dgrijalva/jwt-go"
+	"github.com/guru-invest/guru.framework/src/security/claims"
 )
+
 type JWTAuthenticationStructure struct {
 	Key []byte
 }
 
+const _expireOffset = 3600
 
-const _expireOffset  = 3600
-
-
-type TokenStructure struct{
+type TokenStructure struct {
 	Token string `json:"token"`
 }
 
@@ -35,7 +35,7 @@ func (backend *JWTAuthenticationStructure) GenerateToken(c map[string]string, to
 	}
 }
 
-func singTokenString(token *jwt.Token, backend *JWTAuthenticationStructure) string{
+func singTokenString(token *jwt.Token, backend *JWTAuthenticationStructure) string {
 	tokenString, err := token.SignedString(backend.Key)
 	if err != nil {
 		return ""
@@ -43,7 +43,7 @@ func singTokenString(token *jwt.Token, backend *JWTAuthenticationStructure) stri
 	return tokenString
 }
 
-func generateClaims(c map[string]string, tokenDurationMinute int) *jwt.Token{
+func generateClaims(c map[string]string, tokenDurationMinute int) *jwt.Token {
 	c["locale"] = "U2Ugdm9jw6ogY29uc2VndWl1IGNoZWdhciBhdMOpIGFxdWksIHBvZGUgdGVyIGNlcnRlemEgcXVlIGVzdGFtb3MgaW50ZXJlc3NhZG9zIGVtIHNhYmVyIHF1ZW0gdm9jw6ogw6kuIE1hbmRlIHVtIGVtYWlsIHBhcmEgdG9tQGd1cnUuY29tLnZjIGUgdmFtb3MgYmF0ZXIgdW0gcGFwby4gQWJyYcOnb3Mh"
 	//noinspection ALL
 	claim := claims.Claims{
@@ -52,6 +52,8 @@ func generateClaims(c map[string]string, tokenDurationMinute int) *jwt.Token{
 		c["fullname"],
 		c["locale"],
 		jwt.StandardClaims{
+			Audience:  "Guru-APP",
+			Issuer:    "https://guruapi.com/authentication",
 			ExpiresAt: time.Now().Add(time.Duration(time.Minute * time.Duration(tokenDurationMinute))).Unix(),
 		},
 	}

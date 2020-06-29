@@ -9,6 +9,7 @@ require (
 	github.com/gorilla/mux v1.7.4
 	github.com/jasonsoft/go-short-id v0.0.0-20180410073244-6ed30cc4305d
 	github.com/jinzhu/gorm v1.9.14
+	github.com/onsi/ginkgo v1.13.0 // indirect
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.6.0
 	github.com/swaggo/http-swagger v0.0.0-20200308142732-58ac5e232fba
