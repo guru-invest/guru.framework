@@ -37,9 +37,11 @@ func (e *ErrorResponse) string() string {
 }
 
 // Respond is response write to ResponseWriter
-func respond(w http.ResponseWriter, code int, src interface{}) {
+func respond(w http.ResponseWriter, code int, src interface{}, requestID string) {
 	var body []byte
 	var err error
+	w.Header().Add("Content-Type", "application/json; charset=UTF-8")
+	w.Header().Add("Request-ID", requestID)
 	switch s := src.(type) {
 	case []byte:
 		if !json.Valid(s) {
@@ -68,7 +70,7 @@ func respond(w http.ResponseWriter, code int, src interface{}) {
 }
 
 // Error is wrapped Respond when error response
-func Error(w http.ResponseWriter, code int, err interface{}, msgFriendly string) {
+func Error(w http.ResponseWriter, code int, err interface{}, msgFriendly string, requestID string) {
 	e := struct {
 		ErrorFriendly string      `json:"error_friendly"`
 		Error         interface{} `json:"error"`
@@ -76,13 +78,12 @@ func Error(w http.ResponseWriter, code int, err interface{}, msgFriendly string)
 		ErrorFriendly: msgFriendly,
 		Error:         err,
 	}
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	respond(w, code, e)
+
+	respond(w, code, e, requestID)
 }
 
 // JSON is wrapped Respond when success response
 //src is message success or struct/json/interface result
-func Ok(w http.ResponseWriter, code int, src interface{}) {
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	respond(w, code, src)
+func Ok(w http.ResponseWriter, code int, src interface{}, requestID string) {
+	respond(w, code, src, requestID)
 }
