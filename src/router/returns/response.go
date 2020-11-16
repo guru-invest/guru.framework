@@ -45,7 +45,7 @@ func respond(w http.ResponseWriter, code int, src interface{}, requestID string)
 	switch s := src.(type) {
 	case []byte:
 		if !json.Valid(s) {
-			Error(w, http.StatusInternalServerError, err, "invalid json")
+			Error(w, http.StatusInternalServerError, err, "invalid json", requestID)
 			return
 		}
 		body = s
@@ -54,14 +54,13 @@ func respond(w http.ResponseWriter, code int, src interface{}, requestID string)
 	case *ErrorResponse, ErrorResponse:
 		// avoid infinite loop
 		if body, err = json.Marshal(src); err != nil {
-			w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 			w.WriteHeader(http.StatusInternalServerError)
 			w.Write([]byte("{\"reason\":\"failed to parse json\"}"))
 			return
 		}
 	default:
 		if body, err = json.Marshal(src); err != nil {
-			Error(w, http.StatusInternalServerError, err, "failed to parse json")
+			Error(w, http.StatusInternalServerError, err, "failed to parse json", requestID)
 			return
 		}
 	}
