@@ -1,12 +1,12 @@
-module github.com/guru-invest/guru.framework/v2.0.0
+module github.com/guru-invest/guru.framework
 
 go 1.13
 
 require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
+	github.com/go-redis/redis v6.15.9+incompatible // indirect
 	github.com/gomodule/redigo v2.0.0+incompatible
 	github.com/gorilla/mux v1.8.0
-	github.com/guru-invest/guru.framework v0.0.0-20200629150602-562757c956a0
 	github.com/jasonsoft/go-short-id v0.0.0-20180410073244-6ed30cc4305d
 	github.com/jinzhu/gorm v1.9.16
 	github.com/pkg/errors v0.9.1
