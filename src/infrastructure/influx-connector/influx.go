@@ -10,18 +10,17 @@ type Influx struct {
 	InfluxClient influxdb2.Client
 }
 
-// adicionar url e pass em variáveis
-func InfluxClient() *Influx {
-	client := influxdb2.NewClient("", "")
+func InfluxClient(url string, username string, password string) *Influx {
+	client := influxdb2.NewClient(url, username+":"+password)
 
 	connection := Influx{InfluxClient: client}
 
 	return &connection
 }
 
-func SaveLog(measurement string, logData map[string]string) {
-	client := InfluxClient()
-	write := client.InfluxClient.WriteAPI("guru", "trade_audit_qa")
+func (client *Influx) SaveLog(database string, measurement string, logData map[string]string) {
+	defer closeInfluxConnection(client)
+	write := client.InfluxClient.WriteAPI("guru", database)
 	newPoint := influxdb2.NewPointWithMeasurement(measurement)
 
 	for k, v := range logData {
@@ -30,9 +29,8 @@ func SaveLog(measurement string, logData map[string]string) {
 	newPoint.SetTime(time.Now())
 	write.WritePoint(newPoint)
 
-	CloseInfluxConnection(client)
 }
 
-func CloseInfluxConnection(connection *Influx) {
+func closeInfluxConnection(connection *Influx) {
 	connection.InfluxClient.Close()
 }
