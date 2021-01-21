@@ -7,20 +7,20 @@ import (
 )
 
 type Influx struct {
-	InfluxClient influxdb2.Client
+	Client influxdb2.Client
 }
 
-func InfluxClient(url string, username string, password string) *Influx {
+func (i Influx) InfluxConnection(url string, username string, password string) *Influx {
 	client := influxdb2.NewClient(url, username+":"+password)
 
-	connection := Influx{InfluxClient: client}
+	connection := Influx{Client: client}
 
 	return &connection
 }
 
-func (client *Influx) SaveLog(database string, measurement string, logData map[string]string) {
-	defer closeInfluxConnection(client)
-	write := client.InfluxClient.WriteAPI("guru", database)
+func (i *Influx) SaveLog(database string, measurement string, logData map[string]string) {
+	defer closeInfluxConnection(i)
+	write := i.Client.WriteAPI("guru", database)
 	newPoint := influxdb2.NewPointWithMeasurement(measurement)
 
 	for k, v := range logData {
@@ -32,5 +32,5 @@ func (client *Influx) SaveLog(database string, measurement string, logData map[s
 }
 
 func closeInfluxConnection(connection *Influx) {
-	connection.InfluxClient.Close()
+	connection.Client.Close()
 }
