@@ -37,15 +37,14 @@ func (e *ErrorResponse) string() string {
 }
 
 // Respond is response write to ResponseWriter
-func respond(w http.ResponseWriter, code int, src interface{}, requestID string) {
+func respond(w http.ResponseWriter, code int, src interface{}) {
 	var body []byte
 	var err error
 	w.Header().Add("Content-Type", "application/json; charset=UTF-8")
-	w.Header().Add("Request-ID", requestID)
 	switch s := src.(type) {
 	case []byte:
 		if !json.Valid(s) {
-			Error(w, http.StatusInternalServerError, err, "invalid json", requestID)
+			Error(w, http.StatusInternalServerError, err, "invalid json")
 			return
 		}
 		body = s
@@ -60,7 +59,7 @@ func respond(w http.ResponseWriter, code int, src interface{}, requestID string)
 		}
 	default:
 		if body, err = json.Marshal(src); err != nil {
-			Error(w, http.StatusInternalServerError, err, "failed to parse json", requestID)
+			Error(w, http.StatusInternalServerError, err, "failed to parse json")
 			return
 		}
 	}
@@ -69,7 +68,7 @@ func respond(w http.ResponseWriter, code int, src interface{}, requestID string)
 }
 
 // Error is wrapped Respond when error response
-func Error(w http.ResponseWriter, code int, err interface{}, msgFriendly string, requestID string) {
+func Error(w http.ResponseWriter, code int, err interface{}, msgFriendly string) {
 	e := struct {
 		ErrorFriendly string      `json:"error_friendly"`
 		Error         interface{} `json:"error"`
@@ -78,11 +77,11 @@ func Error(w http.ResponseWriter, code int, err interface{}, msgFriendly string,
 		Error:         err,
 	}
 
-	respond(w, code, e, requestID)
+	respond(w, code, e)
 }
 
 // JSON is wrapped Respond when success response
 //src is message success or struct/json/interface result
-func Ok(w http.ResponseWriter, code int, src interface{}, requestID string) {
-	respond(w, code, src, requestID)
+func Ok(w http.ResponseWriter, code int, src interface{}) {
+	respond(w, code, src)
 }
