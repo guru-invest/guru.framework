@@ -20,7 +20,7 @@ func (i Influx) InfluxConnection(url string, username string, password string) *
 
 func (i *Influx) SaveLog(database string, measurement string, customerCode string, ip string, logData map[string]interface{}) {
 	defer closeInfluxConnection(i)
-	go i.Client.
+	i.Client.
 		WriteAPI("guru", database).
 		WritePoint(
 			influxdb2.NewPoint(
