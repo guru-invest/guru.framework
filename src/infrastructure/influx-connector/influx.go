@@ -18,17 +18,18 @@ func (i Influx) InfluxConnection(url string, username string, password string) *
 	return &connection
 }
 
-func (i *Influx) SaveLog(database string, measurement string, logData map[string]string) {
+func (i *Influx) SaveLog(database string, measurement string, customerCode string, ip string, logData map[string]interface{}) {
 	defer closeInfluxConnection(i)
-	write := i.Client.WriteAPI("guru", database)
-	newPoint := influxdb2.NewPointWithMeasurement(measurement)
-
-	for k, v := range logData {
-		newPoint.AddField(k, v)
-	}
-	newPoint.SetTime(time.Now())
-	write.WritePoint(newPoint)
-
+	go i.Client.
+		WriteAPI("guru", database).
+		WritePoint(
+			influxdb2.NewPoint(
+				measurement,
+				map[string]string{"CustomerCode": customerCode, "IP": ip},
+				logData,
+				time.Now(),
+			),
+		)
 }
 
 func closeInfluxConnection(connection *Influx) {
