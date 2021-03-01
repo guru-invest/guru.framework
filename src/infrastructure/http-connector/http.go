@@ -48,10 +48,10 @@ func (c *HttpClient) Post(uri string, v interface{}, headers map[string]string) 
 		return []byte{}, errors.Wrap(err, "Error on executing request")
 	}
 
+	reqBody, _ := ioutil.ReadAll(res.Body)
 	if res.StatusCode >= 200 && res.StatusCode <= 299 {
-		reqBody, _ := ioutil.ReadAll(res.Body)
 		return reqBody, nil
 	}
 
-	return []byte{}, errors.Wrap(errors.New(strconv.Itoa(res.StatusCode)), res.Status)
+	return reqBody, errors.Wrap(errors.New(strconv.Itoa(res.StatusCode)), res.Status)
 }
