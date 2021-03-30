@@ -18,14 +18,14 @@ func (i Influx) InfluxConnection(url string, username string, password string) *
 	return &connection
 }
 
-func (i *Influx) SaveLog(database string, measurement string, customerCode string, ip string, logData map[string]interface{}) {
+func (i *Influx) SaveLog(database string, measurement string, customerCode string, ip string, eventType string, logData map[string]interface{}) {
 	defer closeInfluxConnection(i)
 	i.Client.
 		WriteAPI("guru", database).
 		WritePoint(
 			influxdb2.NewPoint(
 				measurement,
-				map[string]string{"CustomerCode": customerCode, "IP": ip},
+				map[string]string{"CustomerCode": customerCode, "IP": ip, "EventType": eventType},
 				logData,
 				time.Now(),
 			),
