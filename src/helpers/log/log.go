@@ -28,10 +28,28 @@ type LogWithFields struct {
 	Message      Fields
 }
 
-func InitLog() {
+func InitLog(pLogLevel string) {
+	var logLevel zapcore.Level
+	switch pLogLevel {
+	case "INFO":
+		logLevel = zapcore.InfoLevel
+	case "DEBUG":
+		logLevel = zapcore.DebugLevel
+	case "ERROR":
+		logLevel = zapcore.ErrorLevel
+	case "FATAL":
+		logLevel = zapcore.FatalLevel
+	case "WARN":
+		logLevel = zapcore.WarnLevel
+	case "PANIC":
+		logLevel = zapcore.WarnLevel
+	default:
+		logLevel = zapcore.InfoLevel
+	}
+
 	logger, _ := zap.Config{
 		Encoding:         "json",
-		Level:            zap.NewAtomicLevelAt(zapcore.InfoLevel),
+		Level:            zap.NewAtomicLevelAt(logLevel),
 		OutputPaths:      []string{"stderr"},
 		ErrorOutputPaths: []string{"stderr"},
 		EncoderConfig: zapcore.EncoderConfig{

@@ -8,7 +8,7 @@ import (
 )
 
 func TestLogInfo(t *testing.T) {
-	log.InitLog()
+	log.InitLog("INFO")
 
 	guruLog := log.GuruLog{
 		HTTPHeader: map[string][]string{},
@@ -20,7 +20,7 @@ func TestLogInfo(t *testing.T) {
 	guruLog.HTTPHeader.Add("correlation-id", "AAAAA1-AAAAA2-AAAAA3")
 	guruLog.HTTPHeader.Add("session-id", "FD45D84F7E")
 
-	guruLog.Error(log.LogWithFields{
+	guruLog.Debug(log.LogWithFields{
 		CustomerCode: "customerCode",
 		Message: log.Fields{
 			"msg 1": "mensagem 1",
