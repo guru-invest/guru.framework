@@ -25,7 +25,10 @@ type Fields map[string]interface{}
 
 type LogWithFields struct {
 	CustomerCode string
-	Message      Fields
+	APIName      string
+	IP           string
+	Caller       string
+	InfoMessage  Fields
 }
 
 func InitLog(pLogLevel string) {
@@ -60,9 +63,6 @@ func InitLog(pLogLevel string) {
 
 			TimeKey:    "time",
 			EncodeTime: zapcore.ISO8601TimeEncoder,
-
-			CallerKey:    "caller",
-			EncodeCaller: zapcore.ShortCallerEncoder,
 		},
 	}.Build()
 	sugar = logger.Sugar()
@@ -111,7 +111,10 @@ func (t GuruLog) createMessage(fields *LogWithFields, message string) (string, [
 			"session-id", t.HTTPHeader.Get("session-id"),
 			"user-agent", t.HTTPHeader.Get("user-agent"),
 			"customer-code", fields.CustomerCode,
-			"message", fields.Message,
+			"api-name", fields.APIName,
+			"ip", fields.IP,
+			"caller", fields.Caller,
+			"message", fields.InfoMessage,
 		}
 	}
 

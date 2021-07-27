@@ -23,6 +23,9 @@ func TestLogInfo(t *testing.T) {
 
 	guruLog.Info(&log.LogWithFields{
 		CustomerCode: "customerCode",
+		APIName:      "LogTeste",
+		IP:           "192.168.0.1",
+		Caller:       "TestLogInfo",
 		Message: log.Fields{
 			"msg 1": "mensagem 1",
 			"msg 2": "mensagem 2",
