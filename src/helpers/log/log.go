@@ -28,6 +28,7 @@ type LogWithFields struct {
 	Message      Fields
 }
 
+<<<<<<< HEAD
 func InitLog(pLogLevel string) {
 	var logLevel zapcore.Level
 	switch pLogLevel {
@@ -50,6 +51,12 @@ func InitLog(pLogLevel string) {
 	logger, _ := zap.Config{
 		Encoding:         "json",
 		Level:            zap.NewAtomicLevelAt(logLevel),
+=======
+func InitLog() {
+	logger, _ := zap.Config{
+		Encoding:         "json",
+		Level:            zap.NewAtomicLevelAt(zapcore.InfoLevel),
+>>>>>>> 455c96b115d6debae8dfe9c2bf8f98d50d150054
 		OutputPaths:      []string{"stderr"},
 		ErrorOutputPaths: []string{"stderr"},
 		EncoderConfig: zapcore.EncoderConfig{
