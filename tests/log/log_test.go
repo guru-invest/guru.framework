@@ -29,7 +29,6 @@ func TestLogInfo(t *testing.T) {
 		},
 	}, "primeiro log",
 	)
-	t.Fail()
 
 	fmt.Println("OK")
 }

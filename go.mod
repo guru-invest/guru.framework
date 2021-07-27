@@ -1,31 +1,21 @@
 module github.com/guru-invest/guru.framework
 
-go 1.13
+go 1.16
 
 require (
-	github.com/Bowery/prompt v0.0.0-20190916142128-fa8279994f75 // indirect
-	github.com/brianvoe/gofakeit/v6 v6.0.0 // indirect
-	github.com/dchest/safefile v0.0.0-20151022103144-855e8d98f185 // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/go-redis/redis v6.15.9+incompatible // indirect
-	github.com/gomodule/redigo v2.0.0+incompatible
-	github.com/google/shlex v0.0.0-20191202100458-e7afc7fbc510 // indirect
+	github.com/gomodule/redigo v1.8.5
 	github.com/gorilla/mux v1.8.0
-	github.com/influxdata/influxdb-client-go/v2 v2.2.0
+	github.com/influxdata/influxdb-client-go/v2 v2.4.0
 	github.com/jasonsoft/go-short-id v0.0.0-20180410073244-6ed30cc4305d
 	github.com/jinzhu/gorm v1.9.16
-	github.com/kardianos/govendor v1.0.9 // indirect
+	github.com/onsi/gomega v1.14.0 // indirect
 	github.com/pkg/errors v0.9.1
-	github.com/sirupsen/logrus v1.7.0
-	github.com/swaggo/http-swagger v0.0.0-20200308142732-58ac5e232fba
-<<<<<<< HEAD
-	go.uber.org/atomic v1.9.0 // indirect
-	go.uber.org/multierr v1.7.0 // indirect
-	go.uber.org/tools v0.0.0-20190618225709-2cfd321de3ee // indirect
-	go.uber.org/zap v1.18.1 // indirect
-=======
->>>>>>> bf2a9fc9d96b5a9255708b090a6e1bfb7d7adf0b
-	golang.org/x/net v0.0.0-20201110031124-69a78807bb2b
-	golang.org/x/oauth2 v0.0.0-20201109201403-9fd604954f58
+	github.com/sirupsen/logrus v1.8.1
+	github.com/swaggo/http-swagger v1.0.0
+	go.uber.org/zap v1.18.1
+	golang.org/x/net v0.0.0-20210726213435-c6fcb2dbf985
+	golang.org/x/oauth2 v0.0.0-20210628180205-a41e5a781914
 	gopkg.in/Iwark/spreadsheet.v2 v2.0.0-20191122095212-08231195c43b
 )
