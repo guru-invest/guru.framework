@@ -2,20 +2,17 @@ package log_test
 
 import (
 	"fmt"
+	"net/http"
 	"testing"
 
 	"github.com/guru-invest/guru.framework/src/helpers/log"
 )
 
 func TestLogInfo(t *testing.T) {
-<<<<<<< HEAD
 	log.InitLog("INFO")
-=======
-	log.InitLog()
->>>>>>> 455c96b115d6debae8dfe9c2bf8f98d50d150054
 
 	guruLog := log.GuruLog{
-		HTTPHeader: map[string][]string{},
+		HTTPHeader: &http.Header{},
 	}
 	guruLog.HTTPHeader.Add("user-agent", "Version | teste2 |")
 	guruLog.HTTPHeader.Add("device-id", "ASD4AS56D4-4ASD54AS6D-4AS5D4AS65")
@@ -24,11 +21,7 @@ func TestLogInfo(t *testing.T) {
 	guruLog.HTTPHeader.Add("correlation-id", "AAAAA1-AAAAA2-AAAAA3")
 	guruLog.HTTPHeader.Add("session-id", "FD45D84F7E")
 
-<<<<<<< HEAD
-	guruLog.Debug(log.LogWithFields{
-=======
-	guruLog.Error(log.LogWithFields{
->>>>>>> 455c96b115d6debae8dfe9c2bf8f98d50d150054
+	guruLog.Info(&log.LogWithFields{
 		CustomerCode: "customerCode",
 		Message: log.Fields{
 			"msg 1": "mensagem 1",
@@ -37,6 +30,18 @@ func TestLogInfo(t *testing.T) {
 		},
 	}, "primeiro log",
 	)
+
+	fmt.Println("OK")
+}
+
+func TestLogInfoFieldsNull(t *testing.T) {
+	log.InitLog("INFO")
+
+	guruLog := log.GuruLog{
+		HTTPHeader: nil,
+	}
+
+	guruLog.Info(nil, "primeiro log")
 
 	fmt.Println("OK")
 }

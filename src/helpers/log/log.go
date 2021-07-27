@@ -11,7 +11,7 @@ var logger *zap.Logger
 var sugar *zap.SugaredLogger
 
 type GuruLog struct {
-	HTTPHeader http.Header
+	HTTPHeader *http.Header
 	/*
 		ClientIP      string
 		ServiceName   string
@@ -69,45 +69,55 @@ func InitLog(pLogLevel string) {
 
 }
 
-func (t GuruLog) createMessage(fields LogWithFields, message string) (string, []interface{}) {
-	return message, []interface{}{
-		"client-ip", t.HTTPHeader.Get("client-ip"),
-		"service-name", t.HTTPHeader.Get("service-name"),
-		"device-id", t.HTTPHeader.Get("device-id"),
-		"correlation-id", t.HTTPHeader.Get("correlation-id"),
-		"session-id", t.HTTPHeader.Get("session-id"),
-		"user-agent", t.HTTPHeader.Get("user-agent"),
-		"customer-code", fields.CustomerCode,
-		"message", fields.Message,
-	}
-}
-
-func (t GuruLog) Info(pFields LogWithFields, pMessage string) {
+func (t GuruLog) Info(pFields *LogWithFields, pMessage string) {
 	message, fields := t.createMessage(pFields, pMessage)
 	sugar.Infow(message, fields...)
 }
 
-func (t GuruLog) Error(pFields LogWithFields, pMessage string) {
+func (t GuruLog) Error(pFields *LogWithFields, pMessage string) {
 	message, fields := t.createMessage(pFields, pMessage)
 	sugar.Errorw(message, fields...)
 }
 
-func (t GuruLog) Debug(pFields LogWithFields, pMessage string) {
+func (t GuruLog) Debug(pFields *LogWithFields, pMessage string) {
 	message, fields := t.createMessage(pFields, pMessage)
 	sugar.With(fields...).Debugw(message)
 }
 
 func (t GuruLog) Fatal(pFields *LogWithFields, pMessage string) {
-	message, fields := t.createMessage(*pFields, pMessage)
+	message, fields := t.createMessage(pFields, pMessage)
 	sugar.Fatalw(message, fields...)
 }
 
-func (t GuruLog) Panic(pFields LogWithFields, pMessage string) {
+func (t GuruLog) Panic(pFields *LogWithFields, pMessage string) {
 	message, fields := t.createMessage(pFields, pMessage)
 	sugar.Panicw(message, fields...)
 }
 
-func (t GuruLog) Warning(pFields LogWithFields, pMessage string) {
+func (t GuruLog) Warning(pFields *LogWithFields, pMessage string) {
 	message, fields := t.createMessage(pFields, pMessage)
 	sugar.With(fields...).Warnw(message)
+}
+
+func (t GuruLog) createMessage(fields *LogWithFields, message string) (string, []interface{}) {
+
+	var header []interface{}
+	if t.HTTPHeader != nil {
+		header = []interface{}{
+			"client-ip", t.HTTPHeader.Get("client-ip"),
+			"service-name", t.HTTPHeader.Get("service-name"),
+			"device-id", t.HTTPHeader.Get("device-id"),
+			"correlation-id", t.HTTPHeader.Get("correlation-id"),
+			"session-id", t.HTTPHeader.Get("session-id"),
+			"user-agent", t.HTTPHeader.Get("user-agent"),
+			"customer-code", fields.CustomerCode,
+			"message", fields.Message,
+		}
+	}
+
+	if fields != nil {
+		return message, header
+	}
+
+	return message, []interface{}{}
 }
