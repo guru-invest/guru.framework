@@ -40,7 +40,7 @@ func (e *ErrorResponse) string() string {
 func respond(w http.ResponseWriter, code int, src interface{}) {
 	var body []byte
 	var err error
-
+	w.Header().Add("Content-Type", "application/json; charset=UTF-8")
 	switch s := src.(type) {
 	case []byte:
 		if !json.Valid(s) {
@@ -53,7 +53,6 @@ func respond(w http.ResponseWriter, code int, src interface{}) {
 	case *ErrorResponse, ErrorResponse:
 		// avoid infinite loop
 		if body, err = json.Marshal(src); err != nil {
-			w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 			w.WriteHeader(http.StatusInternalServerError)
 			w.Write([]byte("{\"reason\":\"failed to parse json\"}"))
 			return
@@ -77,13 +76,12 @@ func Error(w http.ResponseWriter, code int, err interface{}, msgFriendly string)
 		ErrorFriendly: msgFriendly,
 		Error:         err,
 	}
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+
 	respond(w, code, e)
 }
 
 // JSON is wrapped Respond when success response
 //src is message success or struct/json/interface result
 func Ok(w http.ResponseWriter, code int, src interface{}) {
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	respond(w, code, src)
 }
