@@ -28,7 +28,6 @@ type LogWithFields struct {
 	Message      Fields
 }
 
-<<<<<<< HEAD
 func InitLog(pLogLevel string) {
 	var logLevel zapcore.Level
 	switch pLogLevel {
@@ -51,12 +50,6 @@ func InitLog(pLogLevel string) {
 	logger, _ := zap.Config{
 		Encoding:         "json",
 		Level:            zap.NewAtomicLevelAt(logLevel),
-=======
-func InitLog() {
-	logger, _ := zap.Config{
-		Encoding:         "json",
-		Level:            zap.NewAtomicLevelAt(zapcore.InfoLevel),
->>>>>>> 455c96b115d6debae8dfe9c2bf8f98d50d150054
 		OutputPaths:      []string{"stderr"},
 		ErrorOutputPaths: []string{"stderr"},
 		EncoderConfig: zapcore.EncoderConfig{
@@ -73,6 +66,7 @@ func InitLog() {
 		},
 	}.Build()
 	sugar = logger.Sugar()
+
 }
 
 func (t GuruLog) createMessage(fields LogWithFields, message string) (string, []interface{}) {
@@ -103,8 +97,8 @@ func (t GuruLog) Debug(pFields LogWithFields, pMessage string) {
 	sugar.With(fields...).Debugw(message)
 }
 
-func (t GuruLog) Fatal(pFields LogWithFields, pMessage string) {
-	message, fields := t.createMessage(pFields, pMessage)
+func (t GuruLog) Fatal(pFields *LogWithFields, pMessage string) {
+	message, fields := t.createMessage(*pFields, pMessage)
 	sugar.Fatalw(message, fields...)
 }
 
