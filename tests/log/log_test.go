@@ -21,7 +21,7 @@ func TestLogInfo(t *testing.T) {
 	guruLog.HTTPHeader.Add("correlation-id", "AAAAA1-AAAAA2-AAAAA3")
 	guruLog.HTTPHeader.Add("session-id", "FD45D84F7E")
 
-	guruLog.Info(&log.LogWithFields{
+	guruLog.Error(&log.LogWithFields{
 		CustomerCode: "customerCode",
 		IP:           "192.168.0.1",
 		Caller:       "TestLogInfo",

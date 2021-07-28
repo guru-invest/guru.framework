@@ -50,13 +50,13 @@ func InitLog(pLogLevel string, pServiceName string) {
 	}
 
 	serviceName = pServiceName
-
 	logger, _ := zap.Config{
 		Encoding:         "json",
 		Level:            zap.NewAtomicLevelAt(logLevel),
 		OutputPaths:      []string{"stderr"},
 		ErrorOutputPaths: []string{"stderr"},
 		EncoderConfig: zapcore.EncoderConfig{
+			MessageKey: "message",
 
 			LevelKey:    "level",
 			EncodeLevel: zapcore.CapitalLevelEncoder,
@@ -112,7 +112,7 @@ func (t GuruLog) createMessage(fields *LogWithFields, message string) (string, [
 			"customer-code", fields.CustomerCode,
 			"ip", fields.IP,
 			"caller", fields.Caller,
-			"message", fields.InfoMessage,
+			"info-message", fields.InfoMessage,
 		}
 	}
 
