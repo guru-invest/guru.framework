@@ -25,7 +25,6 @@ type Fields map[string]interface{}
 
 type LogWithFields struct {
 	CustomerCode string
-	IP           string
 	Caller       string
 	InfoMessage  Fields
 }
@@ -104,13 +103,13 @@ func (t GuruLog) createMessage(fields *LogWithFields, message string) (string, [
 	var header []interface{}
 	if t.HTTPHeader != nil {
 		header = []interface{}{
-			"service-name", serviceName,
 			"device-id", t.HTTPHeader.Get("device-id"),
 			"correlation-id", t.HTTPHeader.Get("correlation-id"),
 			"session-id", t.HTTPHeader.Get("session-id"),
 			"user-agent", t.HTTPHeader.Get("user-agent"),
+			"client-ip", t.HTTPHeader.Get("X-Forwarded-For"),
 			"customer-code", fields.CustomerCode,
-			"client-ip", fields.IP,
+			"service-name", serviceName,
 			"caller", fields.Caller,
 			"info-message", fields.InfoMessage,
 		}

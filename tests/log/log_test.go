@@ -16,14 +16,13 @@ func TestLogInfo(t *testing.T) {
 	}
 	guruLog.HTTPHeader.Add("user-agent", "Version | teste2 |")
 	guruLog.HTTPHeader.Add("device-id", "ASD4AS56D4-4ASD54AS6D-4AS5D4AS65")
-	guruLog.HTTPHeader.Add("client-ip", "192.168.0.1")
+	guruLog.HTTPHeader.Add("X-Forwarded-For", "192.168.0.1")
 	guruLog.HTTPHeader.Add("service-name", "guru.framework")
 	guruLog.HTTPHeader.Add("correlation-id", "AAAAA1-AAAAA2-AAAAA3")
 	guruLog.HTTPHeader.Add("session-id", "FD45D84F7E")
 
 	guruLog.Error(&log.LogWithFields{
 		CustomerCode: "customerCode",
-		IP:           "192.168.0.1",
 		Caller:       "TestLogInfo",
 		InfoMessage: log.Fields{
 			"msg 1": "mensagem 1",
