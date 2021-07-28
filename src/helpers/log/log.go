@@ -110,7 +110,7 @@ func (t GuruLog) createMessage(fields *LogWithFields, message string) (string, [
 			"session-id", t.HTTPHeader.Get("session-id"),
 			"user-agent", t.HTTPHeader.Get("user-agent"),
 			"customer-code", fields.CustomerCode,
-			"ip", fields.IP,
+			"client-ip", fields.IP,
 			"caller", fields.Caller,
 			"info-message", fields.InfoMessage,
 		}
