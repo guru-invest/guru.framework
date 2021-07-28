@@ -9,11 +9,11 @@ import (
 
 var logger *zap.Logger
 var sugar *zap.SugaredLogger
+var serviceName string
 
 type GuruLog struct {
 	HTTPHeader *http.Header
 	/*
-		ClientIP      string
 		ServiceName   string
 		DeviceID      string
 		CorrelationID string
@@ -25,13 +25,12 @@ type Fields map[string]interface{}
 
 type LogWithFields struct {
 	CustomerCode string
-	ServiceName  string
 	IP           string
 	Caller       string
 	InfoMessage  Fields
 }
 
-func InitLog(pLogLevel string) {
+func InitLog(pLogLevel string, pServiceName string) {
 	var logLevel zapcore.Level
 	switch pLogLevel {
 	case "INFO":
@@ -50,6 +49,7 @@ func InitLog(pLogLevel string) {
 		logLevel = zapcore.InfoLevel
 	}
 
+	serviceName = pServiceName
 	logger, _ := zap.Config{
 		Encoding:         "json",
 		Level:            zap.NewAtomicLevelAt(logLevel),
@@ -104,7 +104,7 @@ func (t GuruLog) createMessage(fields *LogWithFields, message string) (string, [
 	var header []interface{}
 	if t.HTTPHeader != nil {
 		header = []interface{}{
-			"service-name", fields.ServiceName,
+			"service-name", serviceName,
 			"device-id", t.HTTPHeader.Get("device-id"),
 			"correlation-id", t.HTTPHeader.Get("correlation-id"),
 			"session-id", t.HTTPHeader.Get("session-id"),

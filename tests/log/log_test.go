@@ -9,7 +9,7 @@ import (
 )
 
 func TestLogInfo(t *testing.T) {
-	log.InitLog("INFO")
+	log.InitLog("INFO", "unit teste")
 
 	guruLog := log.GuruLog{
 		HTTPHeader: &http.Header{},
@@ -23,7 +23,6 @@ func TestLogInfo(t *testing.T) {
 
 	guruLog.Info(&log.LogWithFields{
 		CustomerCode: "customerCode",
-		ServiceName:  "Servicename",
 		IP:           "192.168.0.1",
 		Caller:       "TestLogInfo",
 		InfoMessage: log.Fields{
@@ -38,7 +37,7 @@ func TestLogInfo(t *testing.T) {
 }
 
 func TestLogInfoFieldsNull(t *testing.T) {
-	log.InitLog("INFO")
+	log.InitLog("INFO", "unit teste")
 
 	guruLog := log.GuruLog{
 		HTTPHeader: nil,
