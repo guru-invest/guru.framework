@@ -25,7 +25,7 @@ type Fields map[string]interface{}
 
 type LogWithFields struct {
 	CustomerCode string
-	APIName      string
+	ServiceName  string
 	IP           string
 	Caller       string
 	InfoMessage  Fields
@@ -104,7 +104,7 @@ func (t GuruLog) createMessage(fields *LogWithFields, message string) (string, [
 	var header []interface{}
 	if t.HTTPHeader != nil {
 		header = []interface{}{
-			"service-name", fields.APIName,
+			"service-name", fields.ServiceName,
 			"device-id", t.HTTPHeader.Get("device-id"),
 			"correlation-id", t.HTTPHeader.Get("correlation-id"),
 			"session-id", t.HTTPHeader.Get("session-id"),
