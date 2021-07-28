@@ -50,6 +50,7 @@ func InitLog(pLogLevel string, pServiceName string) {
 	}
 
 	serviceName = pServiceName
+
 	logger, _ := zap.Config{
 		Encoding:         "json",
 		Level:            zap.NewAtomicLevelAt(logLevel),
