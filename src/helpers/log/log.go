@@ -104,12 +104,12 @@ func (t GuruLog) createMessage(fields *LogWithFields, message string) (string, [
 	var header []interface{}
 	if t.HTTPHeader != nil {
 		header = []interface{}{
+			"service-name", fields.APIName,
 			"device-id", t.HTTPHeader.Get("device-id"),
 			"correlation-id", t.HTTPHeader.Get("correlation-id"),
 			"session-id", t.HTTPHeader.Get("session-id"),
 			"user-agent", t.HTTPHeader.Get("user-agent"),
 			"customer-code", fields.CustomerCode,
-			"api-name", fields.APIName,
 			"ip", fields.IP,
 			"caller", fields.Caller,
 			"message", fields.InfoMessage,
