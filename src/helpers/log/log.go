@@ -56,7 +56,6 @@ func InitLog(pLogLevel string, pServiceName string) {
 		OutputPaths:      []string{"stderr"},
 		ErrorOutputPaths: []string{"stderr"},
 		EncoderConfig: zapcore.EncoderConfig{
-			MessageKey: "message",
 
 			LevelKey:    "level",
 			EncodeLevel: zapcore.CapitalLevelEncoder,
