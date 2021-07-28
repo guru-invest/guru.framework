@@ -26,7 +26,7 @@ func TestLogInfo(t *testing.T) {
 		APIName:      "LogTeste",
 		IP:           "192.168.0.1",
 		Caller:       "TestLogInfo",
-		Message: log.Fields{
+		InfoMessage: log.Fields{
 			"msg 1": "mensagem 1",
 			"msg 2": "mensagem 2",
 			"msg 3": "mensagem 3",
