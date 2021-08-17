@@ -25,12 +25,12 @@ func (c *HttpClient) Get(uri string, headers map[string]string) ([]byte, error) 
 	if err != nil {
 		return []byte{}, errors.Wrap(err, "Error on executing get request")
 	} else {
-		if res.Status == "200 OK" {
+		if res.StatusCode == http.StatusOK {
 			reqBody, _ := ioutil.ReadAll(res.Body)
 			return reqBody, nil
 		}
 	}
-	return []byte{}, errors.Wrap(err, "Error on executing get request")
+	return []byte{}, errors.Wrap(errors.New(res.Status), "Error on executing get request")
 }
 
 func (c *HttpClient) Post(uri string, v interface{}, headers map[string]string) ([]byte, error) {
@@ -44,7 +44,6 @@ func (c *HttpClient) Post(uri string, v interface{}, headers map[string]string) 
 	for k, v := range headers {
 		req.Header.Set(k, v)
 	}
-	
 
 	res, err := client.Do(req)
 	if err != nil {
