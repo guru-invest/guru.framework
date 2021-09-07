@@ -10,6 +10,7 @@ require (
 	github.com/influxdata/influxdb-client-go/v2 v2.4.0
 	github.com/jasonsoft/go-short-id v0.0.0-20180410073244-6ed30cc4305d
 	github.com/jinzhu/gorm v1.9.16
+	github.com/kitabisa/go_sdk_clevertap v0.0.7
 	github.com/onsi/gomega v1.14.0 // indirect
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.8.1
