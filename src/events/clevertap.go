@@ -45,3 +45,22 @@ func (et *EventTracker) SendEvent(customer_code string, eventName string, eventP
 	}
 	return nil
 }
+
+func (et *EventTracker) SendProfile(customer_code string, name string, gender string, email string, phone string, nickname string, date_of_birth string, city string, state string, country string) error {
+	builder := et.builder.Build()
+
+	userProperties := make(map[string]interface{})
+	userProperties["Name"] = name
+	userProperties["Gender"] = gender
+	userProperties["Email"] = email
+	userProperties["Nickname"] = nickname
+	userProperties["Date of birth"] = date_of_birth
+	userProperties["Phone"] = phone
+	userProperties["Location"] = city + ", " + state + " - " + country
+
+	err := builder.SendProfile(customer_code, userProperties)
+	if err != nil {
+		return err
+	}
+	return nil
+}
