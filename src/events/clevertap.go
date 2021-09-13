@@ -3,6 +3,7 @@ package events
 import (
 	"net/http"
 	"net/url"
+	"strings"
 	"time"
 
 	clevertap "github.com/kitabisa/go_sdk_clevertap"
@@ -58,6 +59,90 @@ func (et *EventTracker) SendProfile(customer_code string, name string, gender st
 	userProperties["Phone"] = phone
 	userProperties["Location"] = city + ", " + state + " - " + country
 
+	err := builder.SendProfile(customer_code, userProperties)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (et *EventTracker) SendName(customer_code string, name string) error {
+	builder := et.builder.Build()
+
+	userProperties := make(map[string]interface{})
+	userProperties["Name"] = name
+	err := builder.SendProfile(customer_code, userProperties)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (et *EventTracker) SendGender(customer_code string, gender string) error {
+	builder := et.builder.Build()
+
+	userProperties := make(map[string]interface{})
+	userProperties["Gender"] = gender
+	err := builder.SendProfile(customer_code, userProperties)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (et *EventTracker) SendEmail(customer_code string, email string) error {
+	builder := et.builder.Build()
+
+	userProperties := make(map[string]interface{})
+	userProperties["Email"] = strings.ToLower(email)
+	err := builder.SendProfile(customer_code, userProperties)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (et *EventTracker) SendNickname(customer_code string, nickname string) error {
+	builder := et.builder.Build()
+
+	userProperties := make(map[string]interface{})
+	userProperties["Nickname"] = nickname
+	err := builder.SendProfile(customer_code, userProperties)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (et *EventTracker) SendDateOfBirth(customer_code string, date_of_birth string) error {
+	builder := et.builder.Build()
+
+	userProperties := make(map[string]interface{})
+	userProperties["Date of birth"] = date_of_birth
+	err := builder.SendProfile(customer_code, userProperties)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (et *EventTracker) SendPhone(customer_code string, phone string) error {
+	builder := et.builder.Build()
+
+	userProperties := make(map[string]interface{})
+	userProperties["Phone"] = phone
+	err := builder.SendProfile(customer_code, userProperties)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (et *EventTracker) SendLocation(customer_code string, city string, state string, country string) error {
+	builder := et.builder.Build()
+
+	userProperties := make(map[string]interface{})
+	userProperties["Location"] = city + ", " + state + " - " + country
 	err := builder.SendProfile(customer_code, userProperties)
 	if err != nil {
 		return err
