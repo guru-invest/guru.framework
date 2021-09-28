@@ -164,3 +164,27 @@ func (et *EventTracker) SendLocation(customer_code string, city string, state st
 	}
 	return nil
 }
+
+func (et *EventTracker) SendDateOfRegistry(customer_code string, dateregistry time.Time) error {
+	builder := et.builder.Build()
+
+	userProperties := make(map[string]interface{})
+	userProperties["Date of Registry"] = dateregistry
+	err := builder.SendProfile(customer_code, userProperties)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (et *EventTracker) SendDateOfPreRegistry(customer_code string, datePreregistry time.Time) error {
+	builder := et.builder.Build()
+
+	userProperties := make(map[string]interface{})
+	userProperties["Date of Preregistry"] = datePreregistry
+	err := builder.SendProfile(customer_code, userProperties)
+	if err != nil {
+		return err
+	}
+	return nil
+}

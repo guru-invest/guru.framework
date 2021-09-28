@@ -3,6 +3,7 @@ package events
 import (
 	"fmt"
 	"testing"
+	"time"
 )
 
 func TestClevertapEvent(t *testing.T) {
@@ -10,7 +11,12 @@ func TestClevertapEvent(t *testing.T) {
 
 	//Profile
 
-	err := tracker.SendProfile("testeAgoraVai6", "Weverton", "male", "tom+3@guru.com.vc", "+5511947588847", "Tom", "07/11/1988", "São Paulo", "SP", "Brasil")
+	// err := tracker.SendProfile("testeAgoraVai6", "Weverton", "male", "tom+3@guru.com.vc", "+5511947588847", "Tom", "07/11/1988", "São Paulo", "SP", "Brasil")
+	// if err != nil {
+	// 	fmt.Printf("%v", err)
+	// }
+
+	err := tracker.SendDateOfRegistry("fzVzgo8b", time.Now())
 	if err != nil {
 		fmt.Printf("%v", err)
 	}
