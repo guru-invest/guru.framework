@@ -16,7 +16,7 @@ func TestClevertapEvent(t *testing.T) {
 	// }
 
 	//err := tracker.CreateProfile("fzVzgo8b", "Tiago Sanches", "tiago@guru.com.vc", "Tiago Sanches")
-	err := tracker.SendUserProperty("fzVzgo8b", "Suitability Profile", "Aggressive")
+	err := tracker.SendUserProperty("fzVzgo8b", "Suitability Profile", "Moderate")
 	if err != nil {
 		fmt.Printf("%v", err)
 	}

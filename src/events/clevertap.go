@@ -190,7 +190,7 @@ func (et *EventTracker) SendDateOfPreRegistry(customer_code string, datePreregis
 }
 
 // Metodo generico pra enviar qualquer user property, essa mesma user property  precisa estar cadastrada no clevertap
-func (et *EventTracker) SendUserProperty(customerCode string, userPropertyType string, userPropertyValue string) error {
+func (et *EventTracker) SendUserProperty(customerCode string, userPropertyType string, userPropertyValue interface{}) error {
 	builder := et.builder.Build()
 
 	userProperties := map[string]interface{}{
