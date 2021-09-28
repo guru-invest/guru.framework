@@ -3,7 +3,6 @@ package events
 import (
 	"fmt"
 	"testing"
-	"time"
 )
 
 func TestClevertapEvent(t *testing.T) {
@@ -16,7 +15,8 @@ func TestClevertapEvent(t *testing.T) {
 	// 	fmt.Printf("%v", err)
 	// }
 
-	err := tracker.SendDateOfRegistry("fzVzgo8b", time.Now())
+	//err := tracker.CreateProfile("fzVzgo8b", "Tiago Sanches", "tiago@guru.com.vc", "Tiago Sanches")
+	err := tracker.SendUserProperty("fzVzgo8b", "Suitability Profile", "Aggressive")
 	if err != nil {
 		fmt.Printf("%v", err)
 	}
