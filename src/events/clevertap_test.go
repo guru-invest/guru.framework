@@ -6,7 +6,7 @@ import (
 )
 
 func TestClevertapEvent(t *testing.T) {
-	tracker := NewEventTracker("https://us1.api.clevertap.com", "TEST-8W6-4W8-8R6Z", "SCC-AKW-CWUL")
+	tracker := NewEventTracker("https://us1.api.clevertap.com", "848-876-5R6Z", "SAE-KMY-UWUL")
 
 	//Profile
 
@@ -15,19 +15,19 @@ func TestClevertapEvent(t *testing.T) {
 	// 	fmt.Printf("%v", err)
 	// }
 
-	//err := tracker.CreateProfile("fzVzgo8b", "Tiago Sanches", "tiago@guru.com.vc", "Tiago Sanches")
-	err := tracker.SendUserProperty("fzVzgo8b", "Suitability Profile", "Moderate")
+	//err := tracker.CreateProfile("fzVzgo8b", "Tiago Sanches 2", "tiago@guru.com.vc", "Tiago Sanches 2")
+	//err := tracker.SendUserProperty("fzVzgo8b", "Years Old", "40")
+	//if err != nil {
+	//	fmt.Printf("%v", err)
+	//}
+
+	//Events
+	properties := make(map[string]interface{})
+	properties["name"] = "ROLINO"
+
+	err := tracker.SendEvent("fzVzgo8b", "pendency_status", properties)
 	if err != nil {
 		fmt.Printf("%v", err)
 	}
-
-	// //Events
-	// properties := make(map[string]interface{})
-	// properties["Name"] = true
-
-	// err = tracker.SendEvent("testeAgoraVai5", "Teste_de_evento", properties)
-	// if err != nil {
-	// 	fmt.Printf("%v", err)
-	// }
 
 }

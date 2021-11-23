@@ -133,3 +133,28 @@ func (c *HttpClient) Put(uri string, v interface{}, headers map[string]string) (
 
 	return reqBody, errors.Wrap(errors.New(strconv.Itoa(res.StatusCode)), res.Status)
 }
+
+func (c *HttpClient) Patch(uri string, v interface{}, headers map[string]string) ([]byte, error) {
+
+	requestBody, err := json.Marshal(v)
+	if err != nil {
+		return []byte{}, errors.Wrap(err, "Error on parsing request body")
+	}
+	client := &http.Client{}
+	req, _ := http.NewRequest("PATCH", uri, bytes.NewBuffer(requestBody))
+	for k, v := range headers {
+		req.Header.Set(k, v)
+	}
+
+	res, err := client.Do(req)
+	if err != nil {
+		return []byte{}, errors.Wrap(err, "Error on executing request")
+	}
+
+	reqBody, _ := ioutil.ReadAll(res.Body)
+	if res.StatusCode >= 200 && res.StatusCode <= 299 {
+		return reqBody, nil
+	}
+
+	return reqBody, errors.Wrap(errors.New(strconv.Itoa(res.StatusCode)), res.Status)
+}
