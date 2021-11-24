@@ -136,12 +136,17 @@ func (c *HttpClient) Put(uri string, v interface{}, headers map[string]string) (
 
 func (c *HttpClient) Patch(uri string, v interface{}, headers map[string]string) ([]byte, error) {
 
-	requestBody, err := json.Marshal(v)
-	if err != nil {
-		return []byte{}, errors.Wrap(err, "Error on parsing request body")
+	requestBodyBuffered := &bytes.Buffer{}
+	if v != nil {
+		requestBody, err := json.Marshal(v)
+		if err != nil {
+			return []byte{}, errors.Wrap(err, "Error on parsing request body")
+		}
+
+		requestBodyBuffered = bytes.NewBuffer(requestBody)
 	}
 	client := &http.Client{}
-	req, err := http.NewRequest(http.MethodPatch, uri, bytes.NewBuffer(requestBody))
+	req, err := http.NewRequest(http.MethodPatch, uri, requestBodyBuffered)
 	for k, v := range headers {
 		req.Header.Set(k, v)
 	}
