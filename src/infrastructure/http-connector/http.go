@@ -141,15 +141,20 @@ func (c *HttpClient) Patch(uri string, v interface{}, headers map[string]string)
 		return []byte{}, errors.Wrap(err, "Error on parsing request body")
 	}
 	client := &http.Client{}
-	req, _ := http.NewRequest("PATCH", uri, bytes.NewBuffer(requestBody))
+	req, err := http.NewRequest(http.MethodPatch, uri, bytes.NewBuffer(requestBody))
 	for k, v := range headers {
 		req.Header.Set(k, v)
+	}
+	if err != nil {
+		return []byte{}, errors.Wrap(err, "Error on executing new request")
 	}
 
 	res, err := client.Do(req)
 	if err != nil {
 		return []byte{}, errors.Wrap(err, "Error on executing request")
 	}
+
+	defer res.Body.Close()
 
 	reqBody, _ := ioutil.ReadAll(res.Body)
 	if res.StatusCode >= 200 && res.StatusCode <= 299 {
