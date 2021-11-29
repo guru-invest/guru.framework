@@ -9,7 +9,7 @@ require (
 	github.com/gorilla/mux v1.8.0
 	github.com/influxdata/influxdb-client-go/v2 v2.4.0
 	github.com/jasonsoft/go-short-id v0.0.0-20180410073244-6ed30cc4305d
-	github.com/jinzhu/gorm v1.9.16
+	github.com/jinzhu/now v1.1.3 // indirect
 	github.com/kitabisa/go_sdk_clevertap v0.0.7
 	github.com/onsi/gomega v1.14.0 // indirect
 	github.com/pkg/errors v0.9.1
@@ -19,4 +19,6 @@ require (
 	golang.org/x/net v0.0.0-20210726213435-c6fcb2dbf985
 	golang.org/x/oauth2 v0.0.0-20210628180205-a41e5a781914
 	gopkg.in/Iwark/spreadsheet.v2 v2.0.0-20191122095212-08231195c43b
+	gorm.io/driver/postgres v1.2.3
+	gorm.io/gorm v1.22.3
 )
