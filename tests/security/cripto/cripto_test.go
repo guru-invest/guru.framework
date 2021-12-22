@@ -34,3 +34,15 @@ func TestAESDecode(t *testing.T) {
 	}
 	fmt.Println(phrase)
 }
+
+func TestAESDecodeShortCiphertext(t *testing.T) {
+	secret := "Projeto@@abGuruc"
+	hash := ""
+	_, err := cripto.DecodeAES([]byte(secret), hash)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Printf("\033[1;31m%s\033[0m", "Ciphertext block size must be too short!\n")
+	t.Fail()
+}
