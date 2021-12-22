@@ -4,7 +4,7 @@ import (
 	"time"
 )
 
-func (backend *JWTAuthenticationStructure) GetTokenRemainingValidity(timestamp interface{}) int {
+func GetTokenRemainingValidity(timestamp interface{}) int {
 	if validity, ok := timestamp.(float64); ok {
 		tm := time.Unix(int64(validity), 0)
 		remainer := tm.Sub(time.Now())
