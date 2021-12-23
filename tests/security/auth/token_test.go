@@ -44,6 +44,16 @@ func TestTokenGeneration(t *testing.T) {
 	}
 }
 
+func TestInvalidTokenGeneration(t *testing.T) {
+
+	token := createInvalidToken()
+	if token.Token == "" {
+		fmt.Print("Null token")
+		t.Fail()
+	} else {
+		fmt.Print(token.Token + "\n")
+	}
+}
 
 func TestTokenValidation(t *testing.T) {
 
