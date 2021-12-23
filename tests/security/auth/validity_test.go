@@ -11,7 +11,7 @@ import (
 func TestGetExpiredToken(t *testing.T) {
 	const _expireOffset = 3600
 
-	Remaining := auth.GetTokenRemainingValidity("")
+	Remaining := auth.InitJWTAuthenticationBackend("InvalidToken").GetTokenRemainingValidity("")
 
 	if Remaining == _expireOffset {
 		return
@@ -28,7 +28,7 @@ func TestGetTokenRemainingValidity(t *testing.T) {
 	now := time.Now()
 	tenSecondsInTheFuture := now.Add(10 * time.Second)
 
-	Remaining := auth.GetTokenRemainingValidity(float64(tenSecondsInTheFuture.Unix()) + float64(0.000000000))
+	Remaining := auth.InitJWTAuthenticationBackend("InvalidToken").GetTokenRemainingValidity(float64(tenSecondsInTheFuture.Unix()) + float64(0.000000000))
 
 	if Remaining > _expireOffset {
 		return
