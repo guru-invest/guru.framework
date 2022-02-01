@@ -28,10 +28,8 @@ func (w *wk) Create(htmlFile string) (string, error) {
 		log.Fatal(err)
 	}
 
-	// Create a new input page from an URL
 	page := wkhtmltopdf.NewPage(w.rootPath)
 
-	// Set options for this page
 	page.FooterRight.Set("[page]")
 	page.FooterFontSize.Set(10)
 	page.Zoom.Set(0.95)
@@ -50,7 +48,3 @@ func (w *wk) Create(htmlFile string) (string, error) {
 
 	return "", nil
 }
-
-// TODO:
-// escapar de gerar pdf e retornar binário https://cloudoki.com/generating-pdfs-with-go/
-// retornar binário na resposta https://www.reddit.com/r/golang/comments/5i5csx/serving_up_bytes_over_http_as_file/
