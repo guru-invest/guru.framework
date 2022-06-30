@@ -24,13 +24,14 @@ func (c *HttpClient) Get(uri string, headers map[string]string) ([]byte, error) 
 	res, err := client.Do(req)
 	if err != nil {
 		return []byte{}, errors.Wrap(err, "Error on executing get request")
-	} else {
-		if res.StatusCode == http.StatusOK {
-			reqBody, _ := ioutil.ReadAll(res.Body)
-			return reqBody, nil
-		}
 	}
-	return []byte{}, errors.Wrap(errors.New(res.Status), "Error on executing get request")
+
+	reqBody, _ := ioutil.ReadAll(res.Body)
+	if res.StatusCode >= 200 && res.StatusCode <= 299 {
+		return reqBody, nil
+	}
+
+	return reqBody, errors.Wrap(errors.New(strconv.Itoa(res.StatusCode)), res.Status)
 }
 
 func (c *HttpClient) Post(uri string, v interface{}, headers map[string]string) ([]byte, error) {
