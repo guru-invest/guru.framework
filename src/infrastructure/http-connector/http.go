@@ -33,18 +33,15 @@ func (c *HttpClient) Get(uri string) ([]byte, error) {
 	return reqBody, errors.Wrap(errors.New(strconv.Itoa(res.StatusCode)), res.Status)
 }
 
-func (c *HttpClient) Post(uri string, v interface{}, headers map[string]string) ([]byte, error) {
+func (c *HttpClient) Post(uri string, v interface{}) ([]byte, error) {
 
 	requestBody, err := json.Marshal(v)
 	if err != nil {
 		return []byte{}, errors.Wrap(err, "Error on parsing request body")
 	}
 	client := &http.Client{}
-	req, _ := http.NewRequest("POST", uri, bytes.NewBuffer(requestBody))
-	for k, v := range headers {
-		req.Header.Set(k, v)
-	}
-
+	req, _ := http.NewRequest(http.MethodPost, uri, bytes.NewBuffer(requestBody))
+	req.Header = c.Header
 	res, err := client.Do(req)
 	if err != nil {
 		return []byte{}, errors.Wrap(err, "Error on executing request")
@@ -84,17 +81,15 @@ func formatRequest(r *http.Request) string {
 	return strings.Join(request, "\n")
 }
 
-func (c *HttpClient) Delete(uri string, v interface{}, headers map[string]string) ([]byte, error) {
+func (c *HttpClient) Delete(uri string, v interface{}) ([]byte, error) {
 
 	requestBody, err := json.Marshal(v)
 	if err != nil {
 		return []byte{}, errors.Wrap(err, "Error on parsing request body")
 	}
 	client := &http.Client{}
-	req, _ := http.NewRequest("DELETE", uri, bytes.NewBuffer(requestBody))
-	for k, v := range headers {
-		req.Header.Set(k, v)
-	}
+	req, _ := http.NewRequest(http.MethodDelete, uri, bytes.NewBuffer(requestBody))
+	req.Header = c.Header
 
 	res, err := client.Do(req)
 	if err != nil {
@@ -109,17 +104,15 @@ func (c *HttpClient) Delete(uri string, v interface{}, headers map[string]string
 	return reqBody, errors.Wrap(errors.New(strconv.Itoa(res.StatusCode)), res.Status)
 }
 
-func (c *HttpClient) Put(uri string, v interface{}, headers map[string]string) ([]byte, error) {
+func (c *HttpClient) Put(uri string, v interface{}) ([]byte, error) {
 
 	requestBody, err := json.Marshal(v)
 	if err != nil {
 		return []byte{}, errors.Wrap(err, "Error on parsing request body")
 	}
 	client := &http.Client{}
-	req, _ := http.NewRequest("PUT", uri, bytes.NewBuffer(requestBody))
-	for k, v := range headers {
-		req.Header.Set(k, v)
-	}
+	req, _ := http.NewRequest(http.MethodPut, uri, bytes.NewBuffer(requestBody))
+	req.Header = c.Header
 
 	res, err := client.Do(req)
 	if err != nil {
@@ -134,7 +127,7 @@ func (c *HttpClient) Put(uri string, v interface{}, headers map[string]string) (
 	return reqBody, errors.Wrap(errors.New(strconv.Itoa(res.StatusCode)), res.Status)
 }
 
-func (c *HttpClient) Patch(uri string, v interface{}, headers map[string]string) ([]byte, error) {
+func (c *HttpClient) Patch(uri string, v interface{}) ([]byte, error) {
 
 	requestBodyBuffered := &bytes.Buffer{}
 	if v != nil {
@@ -147,9 +140,7 @@ func (c *HttpClient) Patch(uri string, v interface{}, headers map[string]string)
 	}
 	client := &http.Client{}
 	req, err := http.NewRequest(http.MethodPatch, uri, requestBodyBuffered)
-	for k, v := range headers {
-		req.Header.Set(k, v)
-	}
+	req.Header = c.Header
 	if err != nil {
 		return []byte{}, errors.Wrap(err, "Error on executing new request")
 	}
