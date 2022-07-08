@@ -16,10 +16,10 @@ type HttpClient struct {
 	Header http.Header
 }
 
-func (c *HttpClient) Get(uri string, headers http.Header) ([]byte, error) {
+func (c *HttpClient) Get(uri string) ([]byte, error) {
 	client := &http.Client{}
 	req, _ := http.NewRequest(http.MethodGet, uri, nil)
-	req.Header = headers
+	req.Header = c.Header
 	res, err := client.Do(req)
 	if err != nil {
 		return []byte{}, errors.Wrap(err, "Error on executing get request")
