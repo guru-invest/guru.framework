@@ -49,7 +49,7 @@ func (kv kvPair) decodeString() []byte {
 
 func getConfig(url string) []byte {
 	client := http_connector.HttpClient{}
-	res, err := client.Get(url)
+	res, err := client.Get(url, nil)
 	if err != nil {
 		log.WithFields(log.Fields{
 			"Error": err.Error(),
