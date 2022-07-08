@@ -37,6 +37,11 @@ func (t DatabaseConnector) ConnectForServless() (*sql.DB, error) {
 	db.SetMaxIdleConns(0)                       //maximo de conexão inativa aguardando reuso
 	db.SetConnMaxLifetime(t.SetConnMaxLifetime) //tempo maximo para expirar uma conexao
 
+	err = db.Ping()
+	if err != nil {
+		return nil, errors.Wrap(err, "error on connecting to database")
+	}
+
 	return db, nil
 }
 

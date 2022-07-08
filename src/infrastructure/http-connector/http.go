@@ -13,14 +13,16 @@ import (
 )
 
 type HttpClient struct {
+	Header http.Header
 }
 
-func (c *HttpClient) Get(uri string, headers map[string]string) ([]byte, error) {
+func (c *HttpClient) Get(uri string) ([]byte, error) {
 	client := &http.Client{}
-	req, _ := http.NewRequest("GET", uri, nil)
-	for k, v := range headers {
-		req.Header.Set(k, v)
-	}
+	req, _ := http.NewRequest(http.MethodGet, uri, nil)
+	req.Header = c.Header
+	// for k, v := range headers {
+	// 	req.Header.Set(k, v)
+	// }
 	res, err := client.Do(req)
 	if err != nil {
 		return []byte{}, errors.Wrap(err, "Error on executing get request")
