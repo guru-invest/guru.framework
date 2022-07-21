@@ -18,7 +18,7 @@ type DatabaseConnector struct {
 	SetConnMaxLifetime time.Duration
 }
 
-func (t DatabaseConnector) ConnectForServless() (*sql.DB, error) {
+func (t DatabaseConnector) ConnectForServerless() (*sql.DB, error) {
 
 	dsn := fmt.Sprintf(
 		"user=%s password=%s dbname=%s host=%s port=%d timezone=%s",
@@ -36,11 +36,6 @@ func (t DatabaseConnector) ConnectForServless() (*sql.DB, error) {
 	db.SetMaxOpenConns(1)                       // maximo de nova conexao por pool de conexao
 	db.SetMaxIdleConns(0)                       //maximo de conexão inativa aguardando reuso
 	db.SetConnMaxLifetime(t.SetConnMaxLifetime) //tempo maximo para expirar uma conexao
-
-	err = db.Ping()
-	if err != nil {
-		return nil, errors.Wrap(err, "error on connecting to database")
-	}
 
 	return db, nil
 }
