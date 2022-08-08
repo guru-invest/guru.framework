@@ -15,11 +15,10 @@ require (
 	github.com/onsi/gomega v1.14.0 // indirect
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.8.1
-	github.com/swaggo/http-swagger v1.0.0
+	github.com/swaggo/http-swagger v1.2.6
 	go.uber.org/zap v1.18.1
 	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519 // indirect
-	golang.org/x/net v0.0.0-20210726213435-c6fcb2dbf985
+	golang.org/x/net v0.0.0-20210805182204-aaa1db679c0d
 	golang.org/x/oauth2 v0.0.0-20210628180205-a41e5a781914
-	golang.org/x/text v0.3.7 // indirect
 	gopkg.in/Iwark/spreadsheet.v2 v2.0.0-20191122095212-08231195c43b
 )
