@@ -1,10 +1,13 @@
 package middlewares
 
 import (
+	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
-	"github.com/guru-invest/guru.framework/src/security/auth"
+	"github.com/golang-jwt/jwt"
+	"github.com/guru-invest/guru.framework/src/models"
 )
 
 type Authorization struct {
@@ -26,9 +29,7 @@ func (t Authorization) AuthorizeWithGinContext(c *gin.Context) {
 		}
 
 		if res.StatusCode == http.StatusOK {
-
-			authenticatedUser := auth.AuthenticatedUserModel{}
-			err := authenticatedUser.Validate(token, t.SigningKey, t.Issuer)
+			err := t.validate(token)
 			if err != nil {
 				c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"Message": err.Error()})
 				return
@@ -41,4 +42,29 @@ func (t Authorization) AuthorizeWithGinContext(c *gin.Context) {
 		return
 	}
 	c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"Message": "Authorization Not Found"})
+}
+
+func (t *Authorization) validate(tokenString string) error {
+	authenticatedUserClaims := models.AuthenticatedUser{}
+	tokenString = strings.ReplaceAll(strings.ReplaceAll(tokenString, "bearer ", ""), "Bearer ", "")
+
+	token, err := jwt.ParseWithClaims(tokenString, &authenticatedUserClaims, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+		}
+		return []byte(t.SigningKey), nil
+	})
+
+	if err != nil {
+		return err
+	}
+
+	if claims, ok := token.Claims.(*models.AuthenticatedUser); ok && token.Valid {
+		if claims.StandardClaims.VerifyIssuer(t.Issuer, true) {
+			models.AUTHENTICATEDUSER = *claims
+			models.AUTHENTICATEDUSER.JwtToken = tokenString
+			return nil
+		}
+	}
+	return err
 }
