@@ -15,10 +15,10 @@ type AuthenticatedUser struct {
 		DocumentNumber string `json:"document_number"`
 	} `json:"customer"`
 	External struct {
-		CustomerID         string `json:"external_id"`
-		GenialID           string `json:"genial_id"`
-		Status             string `json:"status"`
-		SuitabilityProfile string `json:"suitability"`
+		CustomerID         string            `json:"external_id"`
+		PartnerIds         map[string]string `json:"partner_ids"`
+		Status             string            `json:"status"`
+		SuitabilityProfile string            `json:"suitability"`
 	} `json:"external"`
 	jwt.StandardClaims
 }
