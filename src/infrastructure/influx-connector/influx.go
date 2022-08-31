@@ -10,8 +10,8 @@ type Influx struct {
 	Client influxdb2.Client
 }
 
-func (i Influx) InfluxConnection(url string, username string, password string) *Influx {
-	client := influxdb2.NewClient(url, username+":"+password)
+func (i Influx) InfluxConnection(url string, username string, password string, timeout uint) *Influx {
+	client := influxdb2.NewClientWithOptions(url, username+":"+password, influxdb2.DefaultOptions().SetHTTPRequestTimeout(timeout))
 
 	connection := Influx{Client: client}
 
