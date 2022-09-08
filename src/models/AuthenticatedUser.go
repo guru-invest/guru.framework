@@ -19,6 +19,7 @@ type AuthenticatedUser struct {
 	External struct {
 		CustomerID         string            `json:"external_id"`
 		PartnerIDs         map[string]string `json:"partner_ids"`
+		PartnerTokens      map[string]string `json:"partner_tokens"`
 		Status             string            `json:"status"`
 		SuitabilityProfile string            `json:"suitability"`
 	} `json:"external"`
