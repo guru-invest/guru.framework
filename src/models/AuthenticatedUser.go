@@ -15,6 +15,7 @@ type AuthenticatedUser struct {
 		DocumentNumber      string `json:"document_number"`
 		HasPassword         string `json:"has_password"`
 		UserAcceptMigration *bool  `json:"user_accept_migration"`
+		HasActiveRlp        *bool  `json:"has_active_rlp"`
 	} `json:"customer"`
 	External struct {
 		CustomerID         string            `json:"external_id"`
