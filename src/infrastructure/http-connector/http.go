@@ -8,16 +8,22 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/pkg/errors"
 )
 
 type HttpClient struct {
-	Header http.Header
+	Header  http.Header
+	Timeout time.Duration
 }
 
 func (c *HttpClient) Get(uri string) ([]byte, error) {
 	client := &http.Client{}
+	if c.Timeout != 0 {
+		client.Timeout = c.Timeout
+	}
+	
 	req, _ := http.NewRequest(http.MethodGet, uri, nil)
 	req.Header = c.Header
 	res, err := client.Do(req)
