@@ -17,8 +17,8 @@ type ConnectorService struct {
 // 	return cs.Database
 // }
 
-func (cs *ConnectorService) NewInfluxConnectorService(url string, username string, password string) *influx_connector.Influx {
-	cs.Influx = cs.Influx.InfluxConnection(url, username, password)
+func (cs *ConnectorService) NewInfluxConnectorService(url string, username string, password string, timeout uint) *influx_connector.Influx {
+	cs.Influx = cs.Influx.InfluxConnection(url, username, password, timeout)
 	return cs.Influx
 }
 
