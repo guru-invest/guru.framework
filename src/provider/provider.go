@@ -19,7 +19,7 @@ type Api interface {
 func NewProductionApp(port string, constructors ...interface{}) *fx.App {
 	appPort = port
 	return fx.New(
-		fx.Provide(constructors),
+		fx.Provide(constructors...),
 		fx.Invoke(func(lifecycle fx.Lifecycle, api Api) {
 			lifecycle.Append(
 				fx.Hook{
