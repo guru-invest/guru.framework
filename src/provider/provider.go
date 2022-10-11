@@ -43,7 +43,7 @@ func NewProductionApp(port string, routerConstructor interface{}, appConstructor
 func NewDevelopmentApp(port string, routerConstructor interface{}, appConstructors ...interface{}) *fx.App {
 	appPort = port
 	return fx.New(
-		fx.Provide(routerConstructor, dig.As(new(Api))),
+		fx.Supply(new(Api)),
 		fx.Provide(appConstructors...),
 		fx.Invoke(func(lifecycle fx.Lifecycle, api Api) {
 			lifecycle.Append(
