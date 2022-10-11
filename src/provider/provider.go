@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/apex/gateway"
 	"github.com/gin-gonic/gin"
-	"go.uber.org/dig"
 	"go.uber.org/fx"
 	"strconv"
 )
@@ -20,7 +19,7 @@ type Api interface {
 func NewProductionApp(port string, routerConstructor interface{}, appConstructors ...interface{}) *fx.App {
 	appPort = port
 	return fx.New(
-		fx.Provide(routerConstructor, dig.As(new(Api))),
+		fx.Provide(fx.Annotate(routerConstructor(), fx.As(new(Api)))),
 		fx.Provide(appConstructors...),
 		fx.Invoke(func(lifecycle fx.Lifecycle, api Api) {
 			lifecycle.Append(
@@ -43,7 +42,7 @@ func NewProductionApp(port string, routerConstructor interface{}, appConstructor
 func NewDevelopmentApp(port string, routerConstructor interface{}, appConstructors ...interface{}) *fx.App {
 	appPort = port
 	return fx.New(
-		fx.Supply(new(Api)),
+		fx.Provide(fx.Annotate(routerConstructor(), fx.As(new(Api)))),
 		fx.Provide(appConstructors...),
 		fx.Invoke(func(lifecycle fx.Lifecycle, api Api) {
 			lifecycle.Append(
