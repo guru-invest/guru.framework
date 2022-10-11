@@ -17,11 +17,11 @@ type Api interface {
 	Routes() *gin.Engine
 }
 
-func NewProductionApp(port string, constructors ...interface{}) *fx.App {
+func NewProductionApp(port string, routerConstructor interface{}, appConstructors ...interface{}) *fx.App {
 	appPort = port
 	return fx.New(
-		fx.Provide(dig.As(new(Api))),
-		fx.Provide(constructors...),
+		fx.Provide(routerConstructor, dig.As(new(Api))),
+		fx.Provide(appConstructors...),
 		fx.Invoke(func(lifecycle fx.Lifecycle, api Api) {
 			lifecycle.Append(
 				fx.Hook{
@@ -40,11 +40,11 @@ func NewProductionApp(port string, constructors ...interface{}) *fx.App {
 	)
 }
 
-func NewDevelopmentApp(port string, constructors ...interface{}) *fx.App {
+func NewDevelopmentApp(port string, routerConstructor interface{}, appConstructors ...interface{}) *fx.App {
 	appPort = port
 	return fx.New(
-		fx.Provide(dig.As(new(Api))),
-		fx.Provide(constructors...),
+		fx.Provide(routerConstructor, dig.As(new(Api))),
+		fx.Provide(appConstructors...),
 		fx.Invoke(func(lifecycle fx.Lifecycle, api Api) {
 			lifecycle.Append(
 				fx.Hook{
