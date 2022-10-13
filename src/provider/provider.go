@@ -11,16 +11,22 @@ import (
 
 var appPort string
 
+type AppOptions struct {
+	ApiPort           string
+	RouterConstructor interface{}
+	AppConstructors   []interface{}
+}
+
 type Api interface {
 	Run()
 	Routes() *gin.Engine
 }
 
-func NewProductionApp(port string, routerConstructor interface{}, appConstructors ...interface{}) *fx.App {
-	appPort = port
+func NewProductionApp(options AppOptions) *fx.App {
+	appPort = options.ApiPort
 	return fx.New(
-		fx.Provide(fx.Annotate(routerConstructor, fx.As(new(Api)))),
-		fx.Provide(appConstructors...),
+		fx.Provide(fx.Annotate(options.RouterConstructor, fx.As(new(Api)))),
+		fx.Provide(options.AppConstructors...),
 		fx.Invoke(func(lifecycle fx.Lifecycle, api Api) {
 			lifecycle.Append(
 				fx.Hook{
@@ -39,11 +45,11 @@ func NewProductionApp(port string, routerConstructor interface{}, appConstructor
 	)
 }
 
-func NewDevelopmentApp(port string, routerConstructor interface{}, appConstructors ...interface{}) *fx.App {
-	appPort = port
+func NewDevelopmentApp(options AppOptions) *fx.App {
+	appPort = options.ApiPort
 	return fx.New(
-		fx.Provide(fx.Annotate(routerConstructor, fx.As(new(Api)))),
-		fx.Provide(appConstructors...),
+		fx.Provide(fx.Annotate(options.RouterConstructor, fx.As(new(Api)))),
+		fx.Provide(options.AppConstructors...),
 		fx.Invoke(func(lifecycle fx.Lifecycle, api Api) {
 			lifecycle.Append(
 				fx.Hook{
