@@ -66,14 +66,13 @@ func (et *EventTracker) SendProfile(customer_code string, name string, gender st
 	return nil
 }
 
-func (et *EventTracker) CreateProfile(customer_code string, name string, email string, nickname string, clevertapID string) error {
+func (et *EventTracker) CreateProfile(customer_code string, name string, email string, nickname string) error {
 	err := et.builder.Build().SendProfile(
 		customer_code,
 		map[string]interface{}{
-			"Name":         name,
-			"Email":        email,
-			"Nickname":     nickname,
-			"ClervertapID": clevertapID,
+			"Name":     name,
+			"Email":    email,
+			"Nickname": nickname,
 		},
 	)
 	if err != nil {
