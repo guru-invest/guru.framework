@@ -33,7 +33,7 @@ func NewProductionApp(options AppOptions) *fx.App {
 				fx.Hook{
 					OnStart: func(context.Context) error {
 						//port, _ := strconv.Atoi(appPort)
-						go api.Routes().ServeHTTP(options.ResponseWriter, options.Request)
+						api.Routes().ServeHTTP(options.ResponseWriter, options.Request)
 						return nil
 					},
 				},
