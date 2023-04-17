@@ -2,11 +2,8 @@ package provider
 
 import (
 	"context"
-	"fmt"
 	"net/http"
-	"strconv"
 
-	"github.com/apex/gateway"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/fx"
 )
@@ -35,8 +32,7 @@ func NewProductionApp(options AppOptions) *fx.App {
 			lifecycle.Append(
 				fx.Hook{
 					OnStart: func(context.Context) error {
-						port, _ := strconv.Atoi(appPort)
-						go gateway.ListenAndServe(fmt.Sprintf(":%d", port), api.Routes())
+						go api.Routes().ServeHTTP(options.ResponseWriter, options.Request)
 						return nil
 					},
 				},
