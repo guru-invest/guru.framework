@@ -2,11 +2,10 @@ package provider
 
 import (
 	"context"
-	"fmt"
-	"github.com/apex/gateway"
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"go.uber.org/fx"
-	"strconv"
 )
 
 var appPort string
@@ -15,6 +14,8 @@ type AppOptions struct {
 	ApiPort           string
 	RouterConstructor interface{}
 	AppConstructors   []interface{}
+	ResponseWriter    http.ResponseWriter
+	Request           *http.Request
 }
 
 type Api interface {
@@ -31,8 +32,8 @@ func NewProductionApp(options AppOptions) *fx.App {
 			lifecycle.Append(
 				fx.Hook{
 					OnStart: func(context.Context) error {
-						port, _ := strconv.Atoi(appPort)
-						go gateway.ListenAndServe(fmt.Sprintf(":%d", port), api.Routes())
+						//port, _ := strconv.Atoi(appPort)
+						go api.Routes().ServeHTTP(options.ResponseWriter, options.Request)
 						return nil
 					},
 				},
