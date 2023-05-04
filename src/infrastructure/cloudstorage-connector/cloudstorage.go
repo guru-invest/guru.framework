@@ -7,19 +7,26 @@ import (
 	"log"
 
 	"cloud.google.com/go/storage"
+	"github.com/guru-invest/guru.framework/src/crossCutting/options"
 	"google.golang.org/api/option"
 )
 
-type CloudStorageConnector struct {
+type Credential interface {
+	options.GCPCredentialsOption | options.AWSCredentialsOption
+}
+
+type CloudStorageConnector[T Credential] struct {
+	data T
 }
 
 type FileData struct {
 	Obj []byte
 }
 
-func (h CloudStorageConnector) GetObject(cloudCredential interface{}, bucketName, objectName string) FileData {
+func (c *CloudStorageConnector[T]) GetObject(cloudCredential T, bucketName, objectName string) FileData {
 	ctx := context.Background()
-	credentialsData, err := json.Marshal(cloudCredential)
+	c.data = cloudCredential
+	credentialsData, err := json.Marshal(c.data)
 	if err != nil {
 		log.Fatalf("Failed to parse credentials: %v", err)
 	}
