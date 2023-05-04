@@ -8,6 +8,7 @@ import (
 
 	"cloud.google.com/go/storage"
 	"github.com/guru-invest/guru.framework/src/crossCutting/options"
+	"github.com/guru-invest/guru.framework/src/models"
 	"google.golang.org/api/option"
 )
 
@@ -19,11 +20,7 @@ type CloudStorageConnector[T Credential] struct {
 	data T
 }
 
-type FileData struct {
-	Obj []byte
-}
-
-func (c *CloudStorageConnector[T]) GetObject(cloudCredential T, bucketName, objectName string) FileData {
+func (c *CloudStorageConnector[T]) GetObject(cloudCredential T, bucketName, objectName string) models.StorageFile {
 	ctx := context.Background()
 	c.data = cloudCredential
 	credentialsData, err := json.Marshal(c.data)
@@ -48,7 +45,7 @@ func (c *CloudStorageConnector[T]) GetObject(cloudCredential T, bucketName, obje
 		log.Fatalf("Failed to read object: %v", err)
 	}
 
-	return FileData{
+	return models.StorageFile{
 		Obj: result,
 	}
 }
