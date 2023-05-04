@@ -3,7 +3,6 @@ package cloudstorage_connector
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 
@@ -14,11 +13,11 @@ import (
 type CloudStorageConnector struct {
 }
 
-type Certificates struct {
+type FileData struct {
 	Obj []byte
 }
 
-func (h CloudStorageConnector) GetObject(cloudCredential interface{}, bucketName, objectName string) Certificates {
+func (h CloudStorageConnector) GetObject(cloudCredential interface{}, bucketName, objectName string) FileData {
 	ctx := context.Background()
 	credentialsData, err := json.Marshal(cloudCredential)
 	if err != nil {
@@ -39,10 +38,10 @@ func (h CloudStorageConnector) GetObject(cloudCredential interface{}, bucketName
 
 	result, err := ioutil.ReadAll(obj)
 	if err != nil {
-		fmt.Println(err)
+		log.Fatalf("Failed to read object: %v", err)
 	}
 
-	return Certificates{
+	return FileData{
 		Obj: result,
 	}
 }
