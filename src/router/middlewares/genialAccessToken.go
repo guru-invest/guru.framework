@@ -1,7 +1,6 @@
 package middlewares
 
 import (
-	"crypto/tls"
 	"fmt"
 	"net/http"
 
