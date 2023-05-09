@@ -14,19 +14,14 @@ type GenialAccessToken struct {
 	URL      string `json:"url"`
 	Port     string `json:"port"`
 	Database int    `json:"database"`
-	Auth     string `json:"auth"`
 	Key      string `json:"key"`
 }
 
 func (t GenialAccessToken) clientCacheConnector() (*redis.Client, error) {
 
 	client := redis.NewClient(&redis.Options{
-		Addr:     fmt.Sprintf("%s:%s", t.URL, t.Port),
-		Password: t.Auth,
-		DB:       t.Database,
-		TLSConfig: &tls.Config{
-			InsecureSkipVerify: true,
-		},
+		Addr: fmt.Sprintf("%s:%s", t.URL, t.Port),
+		DB:   t.Database,
 	})
 
 	_, err := client.Ping().Result()
