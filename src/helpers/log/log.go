@@ -52,16 +52,17 @@ func InitLog(pLogLevel string, pServiceName string) {
 	logger, _ := zap.Config{
 		Encoding:         "json",
 		Level:            zap.NewAtomicLevelAt(logLevel),
-		OutputPaths:      []string{"stderr"},
+		OutputPaths:      []string{"stdout"},
 		ErrorOutputPaths: []string{"stderr"},
 		EncoderConfig: zapcore.EncoderConfig{
 			MessageKey: "message",
 
-			LevelKey:    "level",
+			LevelKey:    "severity",
 			EncodeLevel: zapcore.CapitalLevelEncoder,
 
 			TimeKey:    "time",
 			EncodeTime: zapcore.ISO8601TimeEncoder,
+			LineEnding: zapcore.DefaultLineEnding,
 		},
 	}.Build()
 	sugar = logger.Sugar()
