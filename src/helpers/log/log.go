@@ -7,7 +7,31 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
-var logger *zap.Logger
+type LoggedError interface {
+	error
+	LogDetails() Fields
+}
+
+type loggableError struct {
+	err        error
+	logDetails Fields
+}
+
+func (l *loggableError) Error() string {
+	return l.err.Error()
+}
+
+func (l *loggableError) LogDetails() Fields {
+	return l.logDetails
+}
+
+func NewLoggedError(err error, logDetails Fields) LoggedError {
+	return &loggableError{
+		err:        err,
+		logDetails: logDetails,
+	}
+}
+
 var sugar *zap.SugaredLogger
 var serviceName string
 
