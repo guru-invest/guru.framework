@@ -3,13 +3,26 @@ package log
 import (
 	"net/http"
 
+	"github.com/google/uuid"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
 
-type LoggedError interface {
-	error
-	LogDetails() Fields
+const (
+	LevelInfo  = "INFO"
+	LevelDebug = "DEBUG"
+	LevelError = "ERROR"
+	LevelFatal = "FATAL"
+	LevelWarn  = "WARN"
+	LevelPanic = "PANIC"
+)
+
+type Fields map[string]interface{}
+type GuruLogOption func(*GuruLog)
+
+type GuruLog struct {
+	HTTPHeader *http.Header
+	logger     *zap.SugaredLogger
 }
 
 type loggableError struct {
@@ -21,128 +34,99 @@ func (l *loggableError) Error() string {
 	return l.err.Error()
 }
 
-func (l *loggableError) LogDetails() Fields {
-	return l.logDetails
-}
-
-func NewLoggedError(err error, logDetails Fields) LoggedError {
+func NewLoggedError(err error, logDetails Fields) error {
 	return &loggableError{
 		err:        err,
 		logDetails: logDetails,
 	}
 }
 
-var sugar *zap.SugaredLogger
-var serviceName string
-
-type GuruLog struct {
-	HTTPHeader *http.Header
-	/*
-		ServiceName   string
-		DeviceID      string
-		CorrelationID string
-		SessionID     string
-		UserAgent     map[string]interface{}
-	*/
-}
-type Fields map[string]interface{}
-
-type LogWithFields struct {
-	CustomerCode string
-	Caller       string
-	InfoMessage  Fields
-}
-
-func InitLog(pLogLevel string, pServiceName string) {
-	var logLevel zapcore.Level
-	switch pLogLevel {
-	case "INFO":
-		logLevel = zapcore.InfoLevel
-	case "DEBUG":
-		logLevel = zapcore.DebugLevel
-	case "ERROR":
-		logLevel = zapcore.ErrorLevel
-	case "FATAL":
-		logLevel = zapcore.FatalLevel
-	case "WARN":
-		logLevel = zapcore.WarnLevel
-	case "PANIC":
-		logLevel = zapcore.WarnLevel
-	default:
-		logLevel = zapcore.InfoLevel
-	}
-
-	serviceName = pServiceName
-	logger, _ := zap.Config{
+func NewGuruLog(serviceName string, logLevel string, options ...GuruLogOption) *GuruLog {
+	level := parseLogLevel(logLevel)
+	coreLogger, err := zap.Config{
 		Encoding:         "json",
-		Level:            zap.NewAtomicLevelAt(logLevel),
+		Level:            zap.NewAtomicLevelAt(level),
 		OutputPaths:      []string{"stdout"},
 		ErrorOutputPaths: []string{"stderr"},
 		EncoderConfig: zapcore.EncoderConfig{
-			MessageKey: "message",
-
+			MessageKey:  "message",
 			LevelKey:    "severity",
 			EncodeLevel: zapcore.CapitalLevelEncoder,
-
-			TimeKey:    "time",
-			EncodeTime: zapcore.ISO8601TimeEncoder,
-			LineEnding: zapcore.DefaultLineEnding,
+			TimeKey:     "time",
+			EncodeTime:  zapcore.ISO8601TimeEncoder,
 		},
 	}.Build()
-	sugar = logger.Sugar()
 
-}
-
-func (t GuruLog) Info(pFields *LogWithFields, pMessage string) {
-	message, fields := t.createMessage(pFields, pMessage)
-	sugar.Infow(message, fields...)
-}
-
-func (t GuruLog) Error(pFields *LogWithFields, pMessage string) {
-	message, fields := t.createMessage(pFields, pMessage)
-	sugar.Errorw(message, fields...)
-}
-
-func (t GuruLog) Debug(pFields *LogWithFields, pMessage string) {
-	message, fields := t.createMessage(pFields, pMessage)
-	sugar.With(fields...).Debugw(message)
-}
-
-func (t GuruLog) Fatal(pFields *LogWithFields, pMessage string) {
-	message, fields := t.createMessage(pFields, pMessage)
-	sugar.Fatalw(message, fields...)
-}
-
-func (t GuruLog) Panic(pFields *LogWithFields, pMessage string) {
-	message, fields := t.createMessage(pFields, pMessage)
-	sugar.Panicw(message, fields...)
-}
-
-func (t GuruLog) Warning(pFields *LogWithFields, pMessage string) {
-	message, fields := t.createMessage(pFields, pMessage)
-	sugar.With(fields...).Warnw(message)
-}
-
-func (t GuruLog) createMessage(fields *LogWithFields, message string) (string, []interface{}) {
-
-	var header []interface{}
-	if t.HTTPHeader != nil {
-		header = []interface{}{
-			"device-id", t.HTTPHeader.Get("device-id"),
-			"correlation-id", t.HTTPHeader.Get("correlation-id"),
-			"session-id", t.HTTPHeader.Get("session-id"),
-			"user-agent", t.HTTPHeader.Get("user-agent"),
-			"client-ip", t.HTTPHeader.Get("X-Forwarded-For"),
-			"customer-code", fields.CustomerCode,
-			"service-name", serviceName,
-			"caller", fields.Caller,
-			"info-message", fields.InfoMessage,
-		}
+	if err != nil {
+		panic("Failed to initialize logger: " + err.Error())
 	}
 
-	if fields != nil {
-		return message, header
+	log := &GuruLog{
+		logger: coreLogger.Sugar().With("service-name", serviceName),
 	}
 
-	return message, []interface{}{}
+	for _, opt := range options {
+		opt(log)
+	}
+
+	return log
+}
+
+func WithHTTPHeader(httpHeader http.Header) GuruLogOption {
+	httpHeader.Add("correlation-id", uuid.NewString())
+	return func(g *GuruLog) {
+		g.HTTPHeader = &httpHeader
+	}
+}
+
+func parseLogLevel(level string) zapcore.Level {
+	switch level {
+	case LevelDebug:
+		return zapcore.DebugLevel
+	case LevelError:
+		return zapcore.ErrorLevel
+	case LevelFatal:
+		return zapcore.FatalLevel
+	case LevelWarn:
+		return zapcore.WarnLevel
+	case LevelPanic:
+		return zapcore.PanicLevel
+	default:
+		return zapcore.InfoLevel
+	}
+}
+
+func (g *GuruLog) log(level, message string, fields Fields) {
+	extraFields := make([]interface{}, 0, len(fields)*2)
+
+	for k, v := range fields {
+		extraFields = append(extraFields, k, v)
+	}
+
+	switch level {
+	case LevelDebug:
+		g.logger.Debugw(message, extraFields...)
+	case LevelInfo:
+		g.logger.Infow(message, extraFields...)
+	case LevelError:
+		g.logger.Errorw(message, extraFields...)
+	case LevelFatal:
+		g.logger.Fatalw(message, extraFields...)
+	case LevelWarn:
+		g.logger.Warnw(message, extraFields...)
+	case LevelPanic:
+		g.logger.Panicw(message, extraFields...)
+	}
+}
+
+func (g *GuruLog) Info(message string, fields Fields) {
+	g.log(LevelInfo, message, fields)
+}
+
+func (g *GuruLog) Debug(message string, fields Fields) {
+	g.log(LevelDebug, message, fields)
+}
+
+func (g *GuruLog) Error(message string, fields Fields) {
+	g.log(LevelError, message, fields)
 }
