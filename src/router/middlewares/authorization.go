@@ -44,6 +44,10 @@ func (t Authorization) AuthorizeWithGinContext(c *gin.Context) {
 	c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"Message": "Authorization Not Found"})
 }
 
+func (t *Authorization) ValidateToken(tokenString string) error {
+	return t.validate(tokenString)
+}
+
 func (t *Authorization) validate(tokenString string) error {
 	authenticatedUserClaims := models.AuthenticatedUser{}
 	tokenString = strings.ReplaceAll(strings.ReplaceAll(tokenString, "bearer ", ""), "Bearer ", "")
