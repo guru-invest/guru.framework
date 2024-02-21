@@ -51,6 +51,9 @@ func (c *HttpClient) Post(uri string, v interface{}) (int, []byte, error) {
 		return 500, []byte{}, errors.Wrap(err, "Error on parsing request body")
 	}
 	client := &http.Client{}
+	if c.Timeout != 0 {
+		client.Timeout = c.Timeout
+	}
 	req, _ := http.NewRequest(http.MethodPost, uri, bytes.NewBuffer(requestBody))
 	req.Header = c.Header
 	res, err := client.Do(req)
@@ -79,6 +82,9 @@ func (c *HttpClient) Delete(uri string, v interface{}) (int, []byte, error) {
 		return http.StatusInternalServerError, []byte{}, errors.Wrap(err, "Error on parsing request body")
 	}
 	client := &http.Client{}
+	if c.Timeout != 0 {
+		client.Timeout = c.Timeout
+	}
 	req, _ := http.NewRequest(http.MethodDelete, uri, bytes.NewBuffer(requestBody))
 	req.Header = c.Header
 
@@ -108,6 +114,9 @@ func (c *HttpClient) Put(uri string, v interface{}) (int, []byte, error) {
 		return http.StatusInternalServerError, []byte{}, errors.Wrap(err, "Error on parsing request body")
 	}
 	client := &http.Client{}
+	if c.Timeout != 0 {
+		client.Timeout = c.Timeout
+	}
 	req, _ := http.NewRequest(http.MethodPut, uri, bytes.NewBuffer(requestBody))
 	req.Header = c.Header
 	res, err := client.Do(req)
@@ -142,6 +151,9 @@ func (c *HttpClient) Patch(uri string, v interface{}) (int, []byte, error) {
 		requestBodyBuffered = bytes.NewBuffer(requestBody)
 	}
 	client := &http.Client{}
+	if c.Timeout != 0 {
+		client.Timeout = c.Timeout
+	}
 	req, _ := http.NewRequest(http.MethodPatch, uri, requestBodyBuffered)
 	req.Header = c.Header
 
