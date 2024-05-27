@@ -20,6 +20,7 @@ type AuthenticatedUser struct {
 		Bonus                      map[string]string `json:"bonus"`
 		HasAcceptTerms             bool              `json:"has_accept_terms"`
 		ProductInvestmentPeference string            `json:"product_invest_preference"`
+		HasMisplacement            bool              `json:"has_misplacement"`
 	} `json:"customer"`
 	External struct {
 		CustomerID         string            `json:"external_id"`
