@@ -17,7 +17,7 @@ require (
 	github.com/sirupsen/logrus v1.8.1
 	go.uber.org/fx v1.18.2
 	go.uber.org/zap v1.18.1
-	golang.org/x/net v0.9.0
+	golang.org/x/net v0.23.0
 	golang.org/x/oauth2 v0.7.0
 	google.golang.org/api v0.120.0
 	gopkg.in/Iwark/spreadsheet.v2 v2.0.0-20191122095212-08231195c43b
@@ -55,9 +55,9 @@ require (
 	go.uber.org/atomic v1.7.0 // indirect
 	go.uber.org/dig v1.15.0 // indirect
 	go.uber.org/multierr v1.6.0 // indirect
-	golang.org/x/crypto v0.1.0 // indirect
-	golang.org/x/sys v0.7.0 // indirect
-	golang.org/x/text v0.9.0 // indirect
+	golang.org/x/crypto v0.21.0 // indirect
+	golang.org/x/sys v0.18.0 // indirect
+	golang.org/x/text v0.14.0 // indirect
 	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/genproto v0.0.0-20230410155749-daa745c078e1 // indirect
