@@ -14,7 +14,7 @@ require (
 	github.com/kitabisa/go_sdk_clevertap v0.0.7
 	github.com/lib/pq v1.10.2
 	github.com/pkg/errors v0.9.1
-	github.com/sirupsen/logrus v1.8.1
+	github.com/sirupsen/logrus v1.8.3
 	go.uber.org/fx v1.18.2
 	go.uber.org/zap v1.18.1
 	golang.org/x/net v0.9.0
